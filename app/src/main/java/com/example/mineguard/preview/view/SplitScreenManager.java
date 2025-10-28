@@ -1,6 +1,7 @@
 package com.example.mineguard.preview.view;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.FrameLayout;
@@ -184,6 +185,7 @@ public class SplitScreenManager {
      * 设置设备列表
      */
     public void setDevices(List<DeviceItem> devices) {
+        Log.d("SplitScreenManager", "setDevices called with " + devices.size() + " devices."); // 添加这行日志
         this.currentDevices = new ArrayList<>(devices);
         updatePreviewViews();
     }
@@ -199,6 +201,7 @@ public class SplitScreenManager {
                 DeviceItem device = currentDevices.get(i);
                 previewViews.get(i).setDevice(device);
                 previewViews.get(i).setVisibility(View.VISIBLE);
+                Log.d("SplitScreenManager", "Updating view at index " + i + " for device: " + device.getName()); // 添加这行日志
             } else {
                 previewViews.get(i).setDevice(null);
                 previewViews.get(i).setVisibility(View.GONE);
