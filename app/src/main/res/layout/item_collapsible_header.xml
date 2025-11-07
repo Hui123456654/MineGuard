@@ -37,6 +37,19 @@
         android:textColor="@color/text_secondary"
         android:background="@drawable/bg_status_default"
         android:paddingHorizontal="8dp"
-        android:paddingVertical="4dp" />
+        android:paddingVertical="4dp"
+        android:layout_marginEnd="8dp" />
+
+    <Button
+        android:id="@+id/btn_quick_view"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:text="快速查看"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/bg_button_primary"
+        android:paddingHorizontal="12dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp" />
 
 </LinearLayout>

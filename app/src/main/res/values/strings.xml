@@ -20,4 +20,17 @@
     <string name="time_one_week">1周</string>
     <string name="time_one_month">1月</string>
     <string name="time_one_year">1年</string>
+    
+    <!-- Profile strings -->
+    <string name="account_management">账户管理</string>
+    <string name="bind_phone">绑定/换绑手机号</string>
+    <string name="user_guide">使用说明</string>
+    <string name="privacy_policy">第三方信息收集说明</string>
+    <string name="about">关于我们</string>
+    <string name="change_avatar">更换头像</string>
+    <string name="account_management_hint">管理个人信息和账户设置</string>
+    <string name="bind_phone_hint">绑定或更换手机号码</string>
+    <string name="user_guide_hint">查看应用使用说明</string>
+    <string name="privacy_policy_hint">了解隐私政策</string>
+    <string name="about_hint">了解MineGuard</string>
 </resources>

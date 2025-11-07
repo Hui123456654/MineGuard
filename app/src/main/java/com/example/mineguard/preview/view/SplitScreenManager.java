@@ -28,6 +28,9 @@ public class SplitScreenManager {
     private int currentMode = MODE_SINGLE;
     private List<VideoPreviewView> previewViews;
     private List<DeviceItem> currentDevices;
+    private List<DeviceItem> allDevices; // 所有设备列表
+    private int currentPage = 0; // 当前页码
+    private int devicesPerPage = 4; // 每页显示的设备数量
     private OnSplitScreenChangeListener listener;
     
     public interface OnSplitScreenChangeListener {
@@ -42,6 +45,7 @@ public class SplitScreenManager {
         this.container = container;
         this.previewViews = new ArrayList<>();
         this.currentDevices = new ArrayList<>();
+        this.allDevices = new ArrayList<>();
     }
     
     public void setOnSplitScreenChangeListener(OnSplitScreenChangeListener listener) {
@@ -123,27 +127,24 @@ public class SplitScreenManager {
         gridLayout.setRowCount(rows);
         gridLayout.setColumnCount(cols);
         gridLayout.setOrientation(GridLayout.VERTICAL);
-        
-        GridLayout.LayoutParams gridParams = new GridLayout.LayoutParams();
-        gridParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        gridParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        gridParams.setMargins(2, 2, 2, 2);
-        
+        // 为 GridLayout 本身创建正确的 LayoutParams，假设其父容器是 FrameLayout
+        FrameLayout.LayoutParams gridParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
         for (int i = 0; i < rows * cols; i++) {
             VideoPreviewView previewView = createPreviewView();
             previewViews.add(previewView);
-            
-            // 设置布局参数
+            // 为 GridLayout 的子视图设置布局参数
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
             params.height = 0;
             params.columnSpec = GridLayout.spec(i % cols, 1f);
             params.rowSpec = GridLayout.spec(i / cols, 1f);
             params.setMargins(2, 2, 2, 2);
-            
             gridLayout.addView(previewView, params);
         }
-        
+        // 将 GridLayout 添加到父容器，并应用正确的布局参数
         container.addView(gridLayout, gridParams);
     }
     
@@ -186,8 +187,84 @@ public class SplitScreenManager {
      */
     public void setDevices(List<DeviceItem> devices) {
         Log.d("SplitScreenManager", "setDevices called with " + devices.size() + " devices."); // 添加这行日志
-        this.currentDevices = new ArrayList<>(devices);
+        this.allDevices = new ArrayList<>(devices);
+        this.currentPage = 0;
+        updateCurrentPageDevices();
+    }
+    
+    /**
+     * 设置所有设备列表（用于分页）
+     */
+    public void setAllDevices(List<DeviceItem> devices) {
+        this.allDevices = new ArrayList<>(devices);
+        this.currentPage = 0;
+        updateCurrentPageDevices();
+    }
+    
+    /**
+     * 更新当前页的设备列表
+     */
+    private void updateCurrentPageDevices() {
+        currentDevices.clear();
+        
+        int startIndex = currentPage * devicesPerPage;
+        int endIndex = Math.min(startIndex + devicesPerPage, allDevices.size());
+        
+        for (int i = startIndex; i < endIndex; i++) {
+            currentDevices.add(allDevices.get(i));
+        }
+        
         updatePreviewViews();
+    }
+    
+    /**
+     * 切换到下一页
+     */
+    public boolean nextPage() {
+        int maxPage = (int) Math.ceil((double) allDevices.size() / devicesPerPage) - 1;
+        if (currentPage < maxPage) {
+            currentPage++;
+            updateCurrentPageDevices();
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * 切换到上一页
+     */
+    public boolean previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            updateCurrentPageDevices();
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * 获取当前页码
+     */
+    public int getCurrentPage() {
+        return currentPage;
+    }
+    
+    /**
+     * 获取总页数
+     */
+    public int getTotalPages() {
+        return (int) Math.ceil((double) allDevices.size() / devicesPerPage);
+    }
+    
+    /**
+     * 设置每页显示的设备数量
+     */
+    public void setDevicesPerPage(int count) {
+        this.devicesPerPage = count;
+        this.currentPage = 0;
+        if (!allDevices.isEmpty()) {
+            updateCurrentPageDevices();
+        }
     }
     
     /**

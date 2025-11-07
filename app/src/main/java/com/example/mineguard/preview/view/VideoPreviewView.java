@@ -5,7 +5,7 @@ import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log; // 导入 Log 类
+import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -23,7 +23,7 @@ import java.io.IOException;
  */
 public class VideoPreviewView extends FrameLayout implements TextureView.SurfaceTextureListener {
 
-    private static final String TAG = "VideoPreviewView"; // 用于日志输出的 TAG
+    private static final String TAG = "VideoPreviewView";
 
     private TextureView textureView;
     private ImageView ivPlaceholder;

@@ -44,13 +44,17 @@ public class PreviewFragment extends Fragment implements
     private FrameLayout layoutVideoPreview;
     private LinearLayout layoutEmpty;
     private LinearLayout splitModeSelector;
+    private LinearLayout videoSwitchControls;
     private ViewGroup videoContainer;
     private ControlButtonsView controlButtons;
     private TextView tvStatusInfo;
     private TextView tvDeviceCount;
     private TextView tvBottomDeviceCount;
+    private TextView tvPageInfo;
     private Button btnSplitMode;
     private Button btnRefresh;
+    private Button btnPreviousPage;
+    private Button btnNextPage;
 
     // 适配器和管理器
     private DeviceAdapter deviceAdapter;
@@ -108,13 +112,17 @@ public class PreviewFragment extends Fragment implements
         layoutVideoPreview = view.findViewById(R.id.layout_video_preview);
         layoutEmpty = view.findViewById(R.id.layout_empty);
         splitModeSelector = view.findViewById(R.id.split_mode_selector);
+        videoSwitchControls = view.findViewById(R.id.video_switch_controls);
         videoContainer = view.findViewById(R.id.video_container);
         controlButtons = view.findViewById(R.id.control_buttons);
         tvStatusInfo = view.findViewById(R.id.tv_status_info);
         tvDeviceCount = view.findViewById(R.id.tv_device_count);
         tvBottomDeviceCount = view.findViewById(R.id.tv_bottom_device_count);
+        tvPageInfo = view.findViewById(R.id.tv_page_info);
         btnSplitMode = view.findViewById(R.id.btn_split_mode);
         btnRefresh = view.findViewById(R.id.btn_refresh);
+        btnPreviousPage = view.findViewById(R.id.btn_previous_page);
+        btnNextPage = view.findViewById(R.id.btn_next_page);
 
         // 分屏模式按钮
         view.findViewById(R.id.btn_mode_single).setOnClickListener(v -> {
@@ -166,6 +174,25 @@ public class PreviewFragment extends Fragment implements
         btnRefresh.setOnClickListener(v -> {
             loadDeviceData();
             Toast.makeText(requireContext(), "设备列表已刷新", Toast.LENGTH_SHORT).show();
+        });
+
+        // 视频切换按钮事件
+        btnPreviousPage.setOnClickListener(v -> {
+            if (splitScreenManager.previousPage()) {
+                updatePageInfo();
+                Toast.makeText(requireContext(), "切换到上一页", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "已经是第一页", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnNextPage.setOnClickListener(v -> {
+            if (splitScreenManager.nextPage()) {
+                updatePageInfo();
+                Toast.makeText(requireContext(), "切换到下一页", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "已经是最后一页", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -225,7 +252,6 @@ public class PreviewFragment extends Fragment implements
         tvDeviceCount.setText(countText);
         tvBottomDeviceCount.setText(countText);
     }
-
     private void updateEmptyState() {
         if (deviceList.isEmpty()) {
             layoutEmpty.setVisibility(View.VISIBLE);
@@ -253,7 +279,9 @@ public class PreviewFragment extends Fragment implements
         }
 
         if (!onlineDevices.isEmpty()) {
-            splitScreenManager.setDevices(onlineDevices);
+            splitScreenManager.setAllDevices(onlineDevices);
+            updatePageInfo();
+            showVideoSwitchControls();
         }
     }
 
@@ -265,6 +293,26 @@ public class PreviewFragment extends Fragment implements
         tvStatusInfo.setText("设备列表");
         controlButtons.hideControls();
         splitModeSelector.setVisibility(View.GONE);
+        hideVideoSwitchControls();
+    }
+
+    private void showVideoSwitchControls() {
+        // 只在四分屏模式下显示切换按钮
+        if (splitScreenManager.getCurrentMode() == SplitScreenManager.MODE_QUAD) {
+            videoSwitchControls.setVisibility(View.VISIBLE);
+        } else {
+            videoSwitchControls.setVisibility(View.GONE);
+        }
+    }
+
+    private void hideVideoSwitchControls() {
+        videoSwitchControls.setVisibility(View.GONE);
+    }
+
+    private void updatePageInfo() {
+        int currentPage = splitScreenManager.getCurrentPage() + 1; // 页码从1开始显示
+        int totalPages = splitScreenManager.getTotalPages();
+        tvPageInfo.setText(currentPage + "/" + totalPages);
     }
 
     private void toggleSplitModeSelector() {
@@ -348,7 +396,38 @@ public class PreviewFragment extends Fragment implements
                 "\n位置: " + device.getArea(), Toast.LENGTH_LONG).show();
     }
 
-    // SplitScreenManager.OnSplitScreenChangeListener 实现
+    @Override
+    public void onQuickViewClick(String region, List<DeviceItem> devices) {
+        // 过滤出在线的摄像头设备
+        List<DeviceItem> onlineDevices = new ArrayList<>();
+        for (DeviceItem device : devices) {
+            if (device.isOnline() && device.getType() == DeviceItem.TYPE_CAMERA) {
+                onlineDevices.add(device);
+            }
+        }
+        
+        if (onlineDevices.isEmpty()) {
+            Toast.makeText(requireContext(), "该区域没有在线的摄像头设备", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // 切换到视频预览模式
+        switchToVideoMode();
+        
+        // 设置四分屏模式，显示前4个在线设备
+        List<DeviceItem> displayDevices = new ArrayList<>();
+        for (int i = 0; i < Math.min(4, onlineDevices.size()); i++) {
+            displayDevices.add(onlineDevices.get(i));
+        }
+        
+        splitScreenManager.setAllDevices(onlineDevices);
+        splitScreenManager.setSplitMode(SplitScreenManager.MODE_QUAD);
+        updatePageInfo();
+        showVideoSwitchControls();
+        
+        Toast.makeText(requireContext(), "正在查看 " + region + " 的摄像头", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void onModeChanged(int newMode) {
         String modeText = "";
@@ -367,6 +446,8 @@ public class PreviewFragment extends Fragment implements
                 break;
         }
         Toast.makeText(requireContext(), "切换到" + modeText + "模式", Toast.LENGTH_SHORT).show();
+
+        showVideoSwitchControls();
     }
 
     @Override
@@ -382,11 +463,9 @@ public class PreviewFragment extends Fragment implements
                 "\n状态: " + device.getStatusName(), Toast.LENGTH_LONG).show();
     }
 
-    // ControlButtonsView.OnControlClickListener 实现
     @Override
     public void onScreenshotClick(DeviceItem device) {
         Toast.makeText(requireContext(), "截图: " + device.getName(), Toast.LENGTH_SHORT).show();
-        // TODO: 实现截图功能
     }
 
     @Override
@@ -394,7 +473,6 @@ public class PreviewFragment extends Fragment implements
         String message = start ? "开始录像: " + device.getName() : "停止录像: " + device.getName();
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
         device.setRecording(start);
-        // TODO: 实现录像功能
     }
 
     @Override
@@ -402,13 +480,11 @@ public class PreviewFragment extends Fragment implements
         String message = start ? "开始对讲: " + device.getName() : "停止对讲: " + device.getName();
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
         device.setTalking(start);
-        // TODO: 实现对讲功能
     }
 
     @Override
     public void onFullscreenClick(DeviceItem device) {
         Toast.makeText(requireContext(), "全屏: " + device.getName(), Toast.LENGTH_SHORT).show();
-        // TODO: 实现全屏功能
     }
 
     @Override

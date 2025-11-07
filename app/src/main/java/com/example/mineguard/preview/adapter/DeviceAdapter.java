@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public interface OnDeviceClickListener {
         void onDeviceClick(DeviceItem device);
         void onDeviceLongClick(DeviceItem device);
+        void onQuickViewClick(String region, List<DeviceItem> devices);
     }
     
     public DeviceAdapter(OnDeviceClickListener listener) {
@@ -126,12 +128,14 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView tvRegionName;
         TextView tvDeviceCount;
         ImageView ivExpandIndicator;
+        Button btnQuickView;
         
         public HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
             tvRegionName = itemView.findViewById(R.id.tv_region_name);
             tvDeviceCount = itemView.findViewById(R.id.tv_device_count);
             ivExpandIndicator = itemView.findViewById(R.id.iv_expand_indicator);
+            btnQuickView = itemView.findViewById(R.id.btn_quick_view);
         }
         
         public void bind(String region) {
@@ -169,6 +173,13 @@ public class DeviceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 );
                 rotateAnimation.setDuration(200);
                 ivExpandIndicator.startAnimation(rotateAnimation);
+            });
+            
+            // 设置快速查看按钮点击事件
+            btnQuickView.setOnClickListener(v -> {
+                if (listener != null && devices != null) {
+                    listener.onQuickViewClick(region, devices);
+                }
             });
         }
     }
