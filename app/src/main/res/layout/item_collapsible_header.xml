@@ -47,7 +47,7 @@
     <Button
         android:id="@+id/btn_quick_view"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="32dp"
         android:text="快速查看"
         android:textSize="12sp"
         android:textColor="@android:color/white"

@@ -115,8 +115,6 @@ public class PreviewFragment extends Fragment implements
         videoSwitchControls = view.findViewById(R.id.video_switch_controls);
         videoContainer = view.findViewById(R.id.video_container);
         controlButtons = view.findViewById(R.id.control_buttons);
-        // 添加这一行，将当前Fragment设置为controlButtons的监听器
-        controlButtons.setOnControlClickListener(this);
         tvStatusInfo = view.findViewById(R.id.tv_status_info);
         tvDeviceCount = view.findViewById(R.id.tv_device_count);
         tvBottomDeviceCount = view.findViewById(R.id.tv_bottom_device_count);
@@ -230,22 +228,14 @@ public class PreviewFragment extends Fragment implements
                 DeviceItem.TYPE_CAMERA, DeviceItem.STATUS_ONLINE));
 
         // --- 修改部分 ---
-        // 使用资源ID (R.raw.sample_video) 来构建路径，而不是字符串 "/raw/sample_video.mp4    "
-        String videoPath = "android.resource://" + requireContext().getPackageName() + "/" + R.raw.sample_video ;
-        String rtspUrl = "rtsp://admin:cs123456@192.168.1.108"; 
+        // 使用资源ID (R.raw.sample_video) 来构建路径，而不是字符串 "/raw/sample_video.mp4"
+        String videoPath = "android.resource://" + requireContext().getPackageName() + "/" + R.raw.sample_video;
 
-        // 设置模拟视频URL
-        // for (DeviceItem device : deviceList) {
-        //     if (device.getType() == DeviceItem.TYPE_CAMERA && device.isOnline()) {
-        //         // 将之前错误的行替换为下面这行
-        //         device.setVideoUrl(videoPath);
-        //     }
-        // }
         // 设置模拟视频URL
         for (DeviceItem device : deviceList) {
             if (device.getType() == DeviceItem.TYPE_CAMERA && device.isOnline()) {
                 // 将之前错误的行替换为下面这行
-                device.setVideoUrl(rtspUrl); // 使用RTSP地址
+                device.setVideoUrl(videoPath);
             }
         }
     }

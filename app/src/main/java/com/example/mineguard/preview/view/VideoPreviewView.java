@@ -2,9 +2,11 @@ package com.example.mineguard.preview.view;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,12 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.mineguard.R;
 import com.example.mineguard.preview.model.DeviceItem;
-import org.videolan.libvlc.LibVLC;
-import org.videolan.libvlc.Media;
-import org.videolan.libvlc.MediaPlayer;
-import org.videolan.libvlc.util.VLCVideoLayout;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * 视频预览组件
@@ -34,9 +31,8 @@ public class VideoPreviewView extends FrameLayout implements TextureView.Surface
     private TextView tvDeviceStatus;
     private View statusIndicator;
 
-    private VLCVideoLayout vlcVideoLayout;
-    private LibVLC libVLC;
-    private MediaPlayer vlcPlayer;
+    private MediaPlayer mediaPlayer;
+    private Surface surface;
     private DeviceItem currentDevice;
     private boolean isPrepared = false;
 
@@ -71,10 +67,6 @@ public class VideoPreviewView extends FrameLayout implements TextureView.Surface
         tvDeviceStatus = findViewById(R.id.tv_device_status);
         statusIndicator = findViewById(R.id.status_indicator);
 
-        vlcVideoLayout = new VLCVideoLayout(getContext());
-        vlcVideoLayout.setVisibility(GONE);
-        addView(vlcVideoLayout, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
         textureView.setSurfaceTextureListener(this);
 
         setOnClickListener(v -> {
@@ -98,8 +90,7 @@ public class VideoPreviewView extends FrameLayout implements TextureView.Surface
 
         if (device != null && device.isOnline() && device.getVideoUrl() != null) {
             Log.d(TAG, "Device is online with a video URL. Starting playback.");
-            stopVideoPlayback();
-            initializeRTSP(device.getVideoUrl());
+            startVideoPlayback(device.getVideoUrl());
         } else {
             Log.d(TAG, "Device is offline or has no video URL. Stopping playback.");
             stopVideoPlayback();
@@ -130,81 +121,71 @@ public class VideoPreviewView extends FrameLayout implements TextureView.Surface
         }
     }
 
-    private void initializeRTSP(String videoUrl) {
-        Log.d(TAG, "initializeRTSP with URL: " + videoUrl);
+    private void startVideoPlayback(String videoUrl) {
+        Log.d(TAG, "startVideoPlayback with URL: " + videoUrl);
+        if (mediaPlayer == null) {
+            Log.d(TAG, "Creating new MediaPlayer instance.");
+            mediaPlayer = new MediaPlayer();
+        }
+
         try {
-            Log.e(TAG, "VLC-try-Error", new Throwable("Info"));
-            String rtspUrl = videoUrl;
-            Log.d(TAG, "RTSPURL地址是: " + rtspUrl);
+            Log.d(TAG, "Resetting MediaPlayer.");
+            mediaPlayer.reset();
+            Log.d(TAG, "Setting data source...");
+            mediaPlayer.setDataSource(getContext(), Uri.parse(videoUrl));
+            mediaPlayer.setLooping(true);
 
-            ArrayList<String> options = new ArrayList<>();
-            options.add("--rtsp-tcp");
-            options.add("--network-caching=10000");
-            options.add("--avcodec-hw=any");
-
-            vlcVideoLayout.setVisibility(VISIBLE);
-            ivPlaceholder.setVisibility(GONE);
-
-            libVLC = new LibVLC(getContext(), options);
-            vlcPlayer = new MediaPlayer(libVLC);
-
-            Uri uri = Uri.parse(rtspUrl);
-            Media media = new Media(libVLC, uri);
-            vlcPlayer.setMedia(media);
-
-            vlcPlayer.attachViews(vlcVideoLayout, null, false, false);
-            vlcPlayer.play();
-
-            isPrepared = true;
-            textureView.setVisibility(GONE);
-            Log.d(TAG, "LibVLC MediaPlayer started. RTSP should be playing.");
-        } catch (Exception e) {
-            Log.e(TAG, "VLC---Error Error initializing RTSP playback: " + e.getMessage());
-            e.printStackTrace();
-            if (vlcPlayer != null) {
-                try { vlcPlayer.stop(); } catch (Exception ignore) {}
-                try { vlcPlayer.detachViews(); } catch (Exception ignore) {}
+            if (surface != null) {
+                Log.d(TAG, "Surface is available. Setting surface for MediaPlayer.");
+                mediaPlayer.setSurface(surface);
+            } else {
+                Log.w(TAG, "Surface is not available yet. Playback will start after surface is created.");
             }
-            isPrepared = false;
+
+            Log.d(TAG, "Calling prepareAsync().");
+            mediaPlayer.prepareAsync();
+
+            mediaPlayer.setOnPreparedListener(mp -> {
+                Log.d(TAG, "onPrepared: MediaPlayer is prepared.");
+                isPrepared = true;
+                Log.d(TAG, "Starting MediaPlayer.");
+                mp.start();
+                ivPlaceholder.setVisibility(GONE);
+                textureView.setVisibility(VISIBLE);
+                Log.d(TAG, "MediaPlayer started. Video should be playing.");
+            });
+
+            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+                Log.e(TAG, "MediaPlayer Error: what=" + what + ", extra=" + extra);
+                ivPlaceholder.setVisibility(VISIBLE);
+                textureView.setVisibility(GONE);
+                isPrepared = false;
+                return true; // 返回 true 表示错误已被处理
+            });
+
+        } catch (IOException | IllegalStateException e) {
+            Log.e(TAG, "Error setting data source or preparing MediaPlayer", e);
+            e.printStackTrace();
             ivPlaceholder.setVisibility(VISIBLE);
-            vlcVideoLayout.setVisibility(GONE);
             textureView.setVisibility(GONE);
         }
     }
 
     private void stopVideoPlayback() {
         Log.d(TAG, "stopVideoPlayback called.");
-        if (vlcPlayer != null) {
+        if (mediaPlayer != null) {
             try {
-                if (vlcPlayer.isPlaying()) {
-                    vlcPlayer.stop();
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error stopping VLC MediaPlayer", e);
+                mediaPlayer.reset();
+                Log.d(TAG, "MediaPlayer stopped and reset.");
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Error stopping or resetting MediaPlayer", e);
             }
-            try {
-                vlcPlayer.detachViews();
-            } catch (Exception e) {
-                Log.e(TAG, "Error detaching VLC views", e);
-            }
-            try {
-                vlcPlayer.release();
-            } catch (Exception e) {
-                Log.e(TAG, "Error releasing VLC MediaPlayer", e);
-            }
-            vlcPlayer = null;
-        }
-        if (libVLC != null) {
-            try {
-                libVLC.release();
-            } catch (Exception e) {
-                Log.e(TAG, "Error releasing LibVLC", e);
-            }
-            libVLC = null;
         }
         isPrepared = false;
         ivPlaceholder.setVisibility(VISIBLE);
-        vlcVideoLayout.setVisibility(GONE);
         textureView.setVisibility(GONE);
     }
 
@@ -217,27 +198,36 @@ public class VideoPreviewView extends FrameLayout implements TextureView.Surface
     }
 
     public boolean isPlaying() {
-        return vlcPlayer != null && vlcPlayer.isPlaying();
+        return mediaPlayer != null && mediaPlayer.isPlaying();
     }
 
     public void pausePlayback() {
         Log.d(TAG, "pausePlayback called.");
-        if (vlcPlayer != null && vlcPlayer.isPlaying()) {
-            vlcPlayer.pause();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
         }
     }
 
     public void resumePlayback() {
         Log.d(TAG, "resumePlayback called.");
-        if (vlcPlayer != null && isPrepared && !vlcPlayer.isPlaying()) {
-            vlcPlayer.play();
+        if (mediaPlayer != null && isPrepared && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
         }
     }
 
     @Override
     public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surfaceTexture, int width, int height) {
         Log.d(TAG, "onSurfaceTextureAvailable: Surface Texture is now available.");
-        // 使用 LibVLC 渲染到 VLCVideoLayout，TextureView 不参与渲染。
+        surface = new Surface(surfaceTexture);
+        if (mediaPlayer != null) {
+            Log.d(TAG, "Setting surface for existing MediaPlayer instance.");
+            mediaPlayer.setSurface(surface);
+            // 如果之前因为 surface 未准备好而没有播放，可以尝试重新开始
+            if (currentDevice != null && currentDevice.getVideoUrl() != null && !isPlaying() && !isPrepared) {
+                Log.d(TAG, "Retrying video playback after surface became available.");
+                startVideoPlayback(currentDevice.getVideoUrl());
+            }
+        }
     }
 
     @Override
@@ -248,6 +238,11 @@ public class VideoPreviewView extends FrameLayout implements TextureView.Surface
     @Override
     public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surfaceTexture) {
         Log.d(TAG, "onSurfaceTextureDestroyed: Surface Texture is destroyed.");
+        if (surface != null) {
+            surface.release();
+            surface = null;
+        }
+        // 停止播放，但不释放 MediaPlayer，因为 Activity/Fragment 可能只是暂时不可见
         stopVideoPlayback();
         return true;
     }
@@ -260,17 +255,13 @@ public class VideoPreviewView extends FrameLayout implements TextureView.Surface
     public void release() {
         Log.d(TAG, "release called. Releasing all resources.");
         stopVideoPlayback();
-        if (vlcPlayer != null) {
-            try { vlcPlayer.release(); } catch (Exception ignore) {}
-            vlcPlayer = null;
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
-        if (libVLC != null) {
-            try { libVLC.release(); } catch (Exception ignore) {}
-            libVLC = null;
+        if (surface != null) {
+            surface.release();
+            surface = null;
         }
     }
-
-    // 使用 LibVLC 播放，不再需要 Android MediaPlayer 错误解析方法。
-
-    // 使用 LibVLC 播放，不再需要 Android MediaPlayer 错误解析方法。
 }
