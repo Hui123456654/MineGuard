@@ -1,96 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
+    android:layout_margin="@dimen/margin_sm"
+    app:cardCornerRadius="@dimen/corner_radius_md"
+    app:cardElevation="@dimen/card_elevation_xs"
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="@dimen/padding_md">
 
         <!-- 设备图标 -->
         <ImageView
             android:id="@+id/iv_device_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/icon_size_lg"
+            android:layout_height="@dimen/icon_size_lg"
             android:src="@drawable/ic_camera"
             android:background="@drawable/bg_status_default"
-            android:padding="8dp"
-            android:layout_marginEnd="16dp" />
+            android:padding="@dimen/padding_sm"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <!-- 设备信息 -->
         <LinearLayout
+            android:id="@+id/device_info_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginStart="@dimen/margin_md"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_device_icon"
+            app:layout_constraintEnd_toStartOf="@+id/status_indicator"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tv_device_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/tv_device_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="设备名称"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold" />
-
-                <!-- 状态指示器 -->
-                <View
-                    android:id="@+id/status_indicator"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:background="@drawable/bg_status_default"
-                    android:layout_marginStart="8dp" />
-
-            </LinearLayout>
+                android:text="设备名称"
+                android:textSize="@dimen/text_size_lg"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/tv_device_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/spacing_xs"
                 android:text="设备类型"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:textSize="@dimen/text_size_md"
+                android:textColor="@color/text_secondary"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/tv_device_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/spacing_xs"
                 android:text="设备位置"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:textSize="@dimen/text_size_md"
+                android:textColor="@color/text_secondary"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/tv_device_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/spacing_sm"
                 android:text="设备状态"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_sm"
                 android:textColor="@color/text_secondary"
                 android:background="@drawable/bg_status_default"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp" />
+                android:paddingHorizontal="@dimen/padding_sm"
+                android:paddingVertical="@dimen/spacing_xs" />
 
         </LinearLayout>
 
-    </LinearLayout>
+        <!-- 状态指示器 -->
+        <View
+            android:id="@+id/status_indicator"
+            android:layout_width="@dimen/indicator_size"
+            android:layout_height="@dimen/indicator_size"
+            android:background="@drawable/bg_status_default"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_device_name" />
 
-</androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

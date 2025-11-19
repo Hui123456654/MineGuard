@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/placeholder"
+            android:icon="@drawable/ic_dashboard"
             android:title="数据" />
     <item
             android:id="@+id/nav_alarms"
-            android:icon="@drawable/placeholder"
+            android:icon="@drawable/ic_notifications"
             android:title="报警" />
     <item
             android:id="@+id/nav_preview"
-            android:icon="@drawable/placeholder"
+            android:icon="@drawable/ic_video_camera"
             android:title="预览" />
     <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/placeholder"
+            android:icon="@drawable/ic_person"
             android:title="我的" />
 </menu>

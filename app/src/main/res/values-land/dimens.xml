@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 横屏模式适配 -->
+    
+    <!-- 边距和间距 -->
+    <dimen name="margin_md">12dp</dimen>
+    <dimen name="margin_lg">20dp</dimen>
+    <dimen name="margin_xl">28dp</dimen>
+    <dimen name="padding_md">12dp</dimen>
+    <dimen name="padding_lg">20dp</dimen>
+    <dimen name="padding_xl">28dp</dimen>
+
+    <!-- 内容宽度限制 -->
+    <dimen name="content_max_width">900dp</dimen>
+    <dimen name="content_side_margin">20dp</dimen>
+
+    <!-- 卡片尺寸 -->
+    <dimen name="card_min_height">100dp</dimen>
+    <dimen name="stat_card_height">100dp</dimen>
+
+    <!-- 字体大小 -->
+    <dimen name="text_size_xl">18sp</dimen>
+    <dimen name="text_size_xxl">22sp</dimen>
+    <dimen name="text_size_huge">28sp</dimen>
+    <dimen name="stat_number_size">24sp</dimen>
+
+    <!-- 图标尺寸 -->
+    <dimen name="icon_size_lg">28dp</dimen>
+    <dimen name="icon_size_xl">40dp</dimen>
+    <dimen name="stat_icon_size">28dp</dimen>
+
+    <!-- 底部导航 -->
+    <dimen name="bottom_navigation_height">48dp</dimen>
+
+    <!-- 视频预览 -->
+    <dimen name="video_preview_min_height">240dp</dimen>
+
+    <!-- 控制按钮 -->
+    <dimen name="control_button_size">44dp</dimen>
+    <dimen name="control_button_margin">6dp</dimen>
+
+    <!-- 图表相关尺寸 - 横屏模式 -->
+    <dimen name="chart_height">140dp</dimen>
+</resources>

@@ -1,41 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_gray"
+    android:fitsSystemWindows="false"
     tools:context=".home.HomeFragment">
 
-    <LinearLayout
+    <!-- 使用NestedScrollView以支持更好的滚动体验 -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/spacing_sm"
+        android:paddingBottom="@dimen/spacing_xl">
 
-        <!-- Overview Card -->
-        <include
-            android:id="@+id/card_overview"
-            layout="@layout/card_statistics_overview" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/margin_sm">
 
-        <!-- Alarm Trends Chart -->
-        <include
-            android:id="@+id/card_trends"
-            layout="@layout/card_chart_trends" />
+            <!-- Overview Card -->
+            <include
+                android:id="@+id/card_overview"
+                layout="@layout/card_statistics_overview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Scene Statistics Chart -->
-        <include
-            android:id="@+id/card_scene_statistics"
-            layout="@layout/card_chart_pie" />
+            <!-- Alarm Trends Chart -->
+            <include
+                android:id="@+id/card_trends"
+                layout="@layout/card_chart_trends"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_sm"
+                app:layout_constraintTop_toBottomOf="@+id/card_overview"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Device Statistics Chart -->
-        <include
-            android:id="@+id/card_device_statistics"
-            layout="@layout/card_chart_pie" />
+            <!-- Statistics Charts Container - 使用ConstraintLayout实现响应式布局 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/charts_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_sm"
+                app:layout_constraintTop_toBottomOf="@+id/card_trends"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Alarm Type Statistics Chart -->
-        <include
-            android:id="@+id/card_type_statistics"
-            layout="@layout/card_chart_pie" />
+                <!-- Scene Statistics Chart -->
+                <include
+                    android:id="@+id/card_scene_statistics"
+                    layout="@layout/card_chart_pie"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_sm"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_vertical"
+                    app:layout_constraintHorizontal_weight="1" />
 
-    </LinearLayout>
+                <!-- Device Statistics Chart -->
+                <include
+                    android:id="@+id/card_device_statistics"
+                    layout="@layout/card_chart_pie"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_sm"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guideline_vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="1" />
 
-</ScrollView>
+                <!-- 垂直分割线 -->
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Alarm Type Statistics Chart - 全宽度显示 -->
+            <include
+                android:id="@+id/card_type_statistics"
+                layout="@layout/card_chart_pie"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_sm"
+                app:layout_constraintTop_toBottomOf="@+id/charts_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- 底部间距 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_xl"
+                app:layout_constraintTop_toBottomOf="@+id/card_type_statistics"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 大屏幕适配 - 7英寸及以上平板 -->
+    
+    <!-- 边距和间距 -->
+    <dimen name="margin_md">20dp</dimen>
+    <dimen name="margin_lg">32dp</dimen>
+    <dimen name="margin_xl">48dp</dimen>
+    <dimen name="padding_md">20dp</dimen>
+    <dimen name="padding_lg">32dp</dimen>
+    <dimen name="padding_xl">48dp</dimen>
+
+    <!-- 内容宽度限制 -->
+    <dimen name="content_max_width">800dp</dimen>
+    <dimen name="content_side_margin">24dp</dimen>
+
+    <!-- 卡片尺寸 -->
+    <dimen name="card_min_height">140dp</dimen>
+    <dimen name="stat_card_height">140dp</dimen>
+
+    <!-- 字体大小 -->
+    <dimen name="text_size_xl">22sp</dimen>
+    <dimen name="text_size_xxl">28sp</dimen>
+    <dimen name="text_size_huge">36sp</dimen>
+    <dimen name="stat_number_size">32sp</dimen>
+
+    <!-- 图标尺寸 -->
+    <dimen name="icon_size_lg">40dp</dimen>
+    <dimen name="icon_size_xl">56dp</dimen>
+    <dimen name="stat_icon_size">40dp</dimen>
+
+    <!-- 底部导航 -->
+    <dimen name="bottom_navigation_height">64dp</dimen>
+
+    <!-- 视频预览 -->
+    <dimen name="video_preview_min_height">280dp</dimen>
+
+    <!-- 控制按钮 -->
+    <dimen name="control_button_size">52dp</dimen>
+    <dimen name="control_button_margin">10dp</dimen>
+
+    <!-- 图表相关尺寸 - 大屏幕 -->
+    <dimen name="chart_height">200dp</dimen>
+</resources>

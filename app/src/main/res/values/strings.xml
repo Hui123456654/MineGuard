@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MineGuard</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -33,4 +34,72 @@
     <string name="user_guide_hint">查看应用使用说明</string>
     <string name="privacy_policy_hint">了解隐私政策</string>
     <string name="about_hint">了解MineGuard</string>
+    
+    <!-- Alarm fragment strings -->
+    <string name="alarm_list">报警列表</string>
+    <string name="search_hint">搜索报警信息...</string>
+    <string name="filter">筛选</string>
+    <string name="clear">清除</string>
+    <string name="refresh">刷新</string>
+    <string name="no_alarms">暂无报警信息</string>
+    <string name="alarm_detail">报警详情</string>
+    <string name="device_name">设备名称</string>
+    <string name="alarm_time">报警时间</string>
+    <string name="alarm_type">报警类型</string>
+    <string name="alarm_level">报警级别</string>
+    <string name="alarm_status">报警状态</string>
+    <string name="alarm_description">报警描述</string>
+    <string name="processed">已处理</string>
+    <string name="unprocessed">未处理</string>
+    <string name="processing">处理中</string>
+    <string name="critical">严重</string>
+    <string name="warning">警告</string>
+    <string name="normal">正常</string>
+    
+    <!-- Preview fragment strings -->
+    <string name="video_preview">视频预览</string>
+    <string name="device_list">设备列表</string>
+    <string name="split_screen">分屏</string>
+    <string name="fullscreen">全屏</string>
+    <string name="record">录制</string>
+    <string name="screenshot">截图</string>
+    <string name="audio">音频</string>
+    <string name="no_devices">暂无设备</string>
+    <string name="device_status">设备状态</string>
+    <string name="online">在线</string>
+    <string name="offline">离线</string>
+    
+    <!-- Dialog strings -->
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确定</string>
+    <string name="close">关闭</string>
+    <string name="loading">加载中...</string>
+    <string name="error">错误</string>
+    <string name="success">成功</string>
+    <string name="warning_message">警告</string>
+    <string name="info">信息</string>
+    
+    <!-- Navigation strings -->
+    <string name="nav_home">首页</string>
+    <string name="nav_alarm">报警</string>
+    <string name="nav_preview">预览</string>
+    <string name="nav_profile">我的</string>
+    
+    <!-- Common strings -->
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="retry">重试</string>
+    <string name="settings">设置</string>
+    <string name="more">更多</string>
+    <string name="expand">展开</string>
+    <string name="collapse">收起</string>
+    <string name="select_all">全选</string>
+    <string name="deselect_all">取消全选</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="save">保存</string>
+    <string name="share">分享</string>
+    <string name="export">导出</string>
+    <string name="import_data">导入</string>
 </resources>

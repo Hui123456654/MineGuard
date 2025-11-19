@@ -1,45 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
+    android:layout_margin="@dimen/spacing_xs"
+    app:cardCornerRadius="@dimen/corner_radius_md"
+    app:cardElevation="@dimen/card_elevation_xs"
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="@dimen/padding_md">
 
         <!-- 级别指示器 -->
         <View
             android:id="@+id/levelIndicator"
-            android:layout_width="4dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:background="#FFA726" />
+            android:layout_width="@dimen/level_indicator_width"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/margin_sm"
+            android:background="@color/warning_500"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- 图片 -->
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginEnd="12dp"
+            android:layout_width="@dimen/alarm_image_size"
+            android:layout_height="@dimen/alarm_image_size"
+            android:layout_marginEnd="@dimen/margin_md"
             android:scaleType="centerCrop"
-            android:background="#E0E0E0"
-            android:src="@drawable/placeholder" />
+            android:background="@color/neutral_200"
+            android:src="@drawable/placeholder"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/levelIndicator"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <!-- 信息区域 -->
         <LinearLayout
+            android:id="@+id/info_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <!-- 第一行：级别和状态 -->
             <LinearLayout
@@ -53,13 +63,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="警告"
-                    android:textSize="12sp"
-                    android:textColor="#FFA726"
+                    android:textSize="@dimen/text_size_xs"
+                    android:textColor="@color/warning_600"
                     android:background="@drawable/bg_level_warning"
-                    android:paddingStart="6dp"
-                    android:paddingEnd="6dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp" />
+                    android:paddingHorizontal="@dimen/padding_sm"
+                    android:paddingVertical="@dimen/spacing_xs" />
 
                 <View
                     android:layout_width="0dp"
@@ -71,13 +79,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="未处理"
-                    android:textSize="12sp"
-                    android:textColor="#FF5252"
+                    android:textSize="@dimen/text_size_xs"
+                    android:textColor="@color/error_600"
                     android:background="@drawable/bg_status_unprocessed"
-                    android:paddingStart="6dp"
-                    android:paddingEnd="6dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp" />
+                    android:paddingHorizontal="@dimen/padding_sm"
+                    android:paddingVertical="@dimen/spacing_xs" />
 
             </LinearLayout>
 
@@ -86,10 +92,10 @@
                 android:id="@+id/tvDeviceName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/spacing_xs"
                 android:text="掘进机A1"
-                android:textSize="16sp"
-                android:textColor="#212121"
+                android:textSize="@dimen/text_size_lg"
+                android:textColor="@color/text_primary"
                 android:textStyle="bold"
                 android:maxLines="1"
                 android:ellipsize="end" />
@@ -99,10 +105,10 @@
                 android:id="@+id/tvAlgorithmType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/spacing_xs"
                 android:text="人员检测"
-                android:textSize="14sp"
-                android:textColor="#424242"
+                android:textSize="@dimen/text_size_md"
+                android:textColor="@color/text_secondary"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
@@ -111,10 +117,10 @@
                 android:id="@+id/tvScene"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/spacing_xs"
                 android:text="采煤工作面"
-                android:textSize="13sp"
-                android:textColor="#757575"
+                android:textSize="@dimen/text_size_sm"
+                android:textColor="@color/text_tertiary"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
@@ -123,13 +129,13 @@
                 android:id="@+id/tvTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/spacing_sm"
                 android:text="10-17 15:30"
-                android:textSize="12sp"
-                android:textColor="#9E9E9E" />
+                android:textSize="@dimen/text_size_xs"
+                android:textColor="@color/text_quaternary" />
 
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

@@ -1,149 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.MineGuard.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/card_background">
+    android:layout_marginHorizontal="@dimen/margin_md"
+    android:layout_marginVertical="@dimen/margin_sm">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/padding_lg">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/today_overview"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
-
+        <!-- Header with gradient background -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/header_layout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:background="@drawable/bg_gradient_top"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_md"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/statistics_grid">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:text="@string/today_overview"
+                style="@style/TextAppearance.MineGuard.Headline"
+                android:textColor="@color/text_on_primary"
+                android:textSize="@dimen/text_size_xl"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/tv_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="实时监控数据"
+                style="@style/TextAppearance.MineGuard.Caption"
+                android:textColor="@color/primary_100"
+                android:layout_marginTop="@dimen/spacing_xs" />
+
+        </LinearLayout>
+
+        <!-- Statistics Grid using ConstraintLayout for better responsiveness -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/statistics_grid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_lg"
+            app:layout_constraintTop_toBottomOf="@+id/header_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Total Alarms -->
+            <LinearLayout
+                android:id="@+id/total_alarms_layout"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/stat_card_height"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:padding="8dp">
+                android:background="@drawable/bg_level_critical"
+                android:padding="@dimen/padding_md"
+                android:layout_marginEnd="@dimen/margin_sm"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/processed_alarms_layout"
+                app:layout_constraintHorizontal_weight="1">
 
                 <TextView
                     android:id="@+id/tv_total_alarms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="@color/primary_red"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/error_700"
+                    android:textSize="@dimen/stat_number_size"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-light" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_alarms"
+                    style="@style/TextAppearance.MineGuard.Caption"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:gravity="center" />
 
             </LinearLayout>
 
+            <!-- Processed Alarms -->
             <LinearLayout
+                android:id="@+id/processed_alarms_layout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="@dimen/stat_card_height"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:padding="8dp">
+                android:background="@drawable/bg_status_processed"
+                android:padding="@dimen/padding_md"
+                android:layout_marginStart="@dimen/margin_sm"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/total_alarms_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1">
 
                 <TextView
                     android:id="@+id/tv_processed_alarms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="@color/primary_green"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/success_700"
+                    android:textSize="@dimen/stat_number_size"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-light" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/processed_alarms"
+                    style="@style/TextAppearance.MineGuard.Caption"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:gravity="center" />
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_marginTop="8dp">
-
+            <!-- Total Devices -->
             <LinearLayout
+                android:id="@+id/total_devices_layout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="@dimen/stat_card_height"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:padding="8dp">
+                android:background="@drawable/bg_status_default"
+                android:padding="@dimen/padding_md"
+                android:layout_marginEnd="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_md"
+                app:layout_constraintTop_toBottomOf="@+id/total_alarms_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/online_devices_layout"
+                app:layout_constraintHorizontal_weight="1">
 
                 <TextView
                     android:id="@+id/tv_total_devices"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="@color/primary_blue"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/primary_700"
+                    android:textSize="@dimen/stat_number_size"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-light" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_devices"
+                    style="@style/TextAppearance.MineGuard.Caption"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:gravity="center" />
 
             </LinearLayout>
 
+            <!-- Online Devices -->
             <LinearLayout
+                android:id="@+id/online_devices_layout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="@dimen/stat_card_height"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:padding="8dp">
+                android:background="@drawable/bg_level_warning"
+                android:padding="@dimen/padding_md"
+                android:layout_marginStart="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_md"
+                app:layout_constraintTop_toBottomOf="@+id/processed_alarms_layout"
+                app:layout_constraintStart_toEndOf="@+id/total_devices_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1">
 
                 <TextView
                     android:id="@+id/tv_online_devices"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="@color/primary_orange"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/warning_700"
+                    android:textSize="@dimen/stat_number_size"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-light" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/online_devices"
+                    style="@style/TextAppearance.MineGuard.Caption"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:gravity="center" />
 
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

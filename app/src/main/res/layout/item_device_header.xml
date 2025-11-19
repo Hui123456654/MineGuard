@@ -15,7 +15,11 @@
         android:text="区域名称"
         android:textSize="16sp"
         android:textColor="@color/text_primary"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:minHeight="24dp"
+        android:maxLines="2"
+        android:ellipsize="end" />
 
     <TextView
         android:id="@+id/tv_device_count"

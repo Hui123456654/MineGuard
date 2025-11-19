@@ -1,304 +1,375 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_gray"
+    android:background="@color/neutral_50"
+    android:fitsSystemWindows="false"
     tools:context=".profile.ProfileFragment">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/spacing_sm"
+        android:paddingBottom="@dimen/spacing_xl">
 
-        <!-- 用户信息卡片 -->
-        <androidx.cardview.widget.CardView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            android:paddingHorizontal="@dimen/margin_sm">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- 用户信息卡片 -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/user_info_card"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp">
+                android:layout_marginHorizontal="@dimen/margin_md"
+                app:cardCornerRadius="@dimen/corner_radius_xl"
+                app:cardElevation="@dimen/card_elevation_md"
+                app:cardBackgroundColor="@color/surface"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <!-- 头像和用户名 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_xl">
 
-                    <ImageView
-                        android:id="@+id/iv_avatar"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:background="@drawable/bg_button_outline"
-                        android:padding="2dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_camera" />
-
+                    <!-- 头像和用户名 -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tv_username"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/text_primary"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            tools:text="张三" />
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="@dimen/avatar_size"
+                            android:layout_height="@dimen/avatar_size"
+                            app:cardCornerRadius="@dimen/avatar_radius"
+                            app:cardElevation="@dimen/card_elevation_sm"
+                            app:strokeColor="@color/primary_200"
+                            app:strokeWidth="@dimen/spacing_xs">
 
-                        <TextView
-                            android:id="@+id/tv_phone_number"
-                            android:layout_width="wrap_content"
+                            <ImageView
+                                android:id="@+id/iv_avatar"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_person"
+                                android:background="@color/primary_50"
+                                android:padding="@dimen/padding_md" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="14sp"
-                            tools:text="138****8888" />
+                            android:layout_marginStart="@dimen/margin_lg"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_username"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/TextAppearance.MineGuard.Headline"
+                                android:textSize="@dimen/text_size_xxl"
+                                tools:text="张三" />
+
+                            <TextView
+                                android:id="@+id/tv_phone_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_sm"
+                                style="@style/TextAppearance.MineGuard.Body"
+                                android:textColor="@color/text_secondary"
+                                tools:text="138****8888" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-        </androidx.cardview.widget.CardView>
-
-        <!-- 功能菜单列表 -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- 功能菜单列表 -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/account_menu_card"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginHorizontal="@dimen/margin_md"
+                android:layout_marginTop="@dimen/margin_md"
+                app:cardCornerRadius="@dimen/corner_radius_lg"
+                app:cardElevation="@dimen/card_elevation_sm"
+                app:cardBackgroundColor="@color/surface"
+                app:layout_constraintTop_toBottomOf="@+id/user_info_card"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <!-- 账户管理 -->
                 <LinearLayout
-                    android:id="@+id/ll_account_management"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_person"
-                        android:tint="@color/primary_blue" />
+                    <!-- 账户管理 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/ll_account_management"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/menu_item_height"
+                        android:layout_margin="@dimen/spacing_sm"
+                        app:cardCornerRadius="@dimen/corner_radius_md"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/primary_50"
+                        app:rippleColor="@color/primary_100">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="@string/account_management"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="@dimen/padding_lg">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_expand_more"
-                        android:tint="@color/text_secondary" />
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_person"
+                                app:tint="@color/primary_600" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_md"
+                                android:layout_weight="1"
+                                android:text="@string/account_management"
+                                style="@style/TextAppearance.MineGuard.Body"
+                                android:textColor="@color/text_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_expand_more"
+                                app:tint="@color/text_tertiary" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- 绑定/换绑手机号 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/ll_bind_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/menu_item_height"
+                        android:layout_margin="@dimen/spacing_sm"
+                        app:cardCornerRadius="@dimen/corner_radius_md"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/success_50"
+                        app:rippleColor="@color/success_100">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="@dimen/padding_lg">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_phone"
+                                app:tint="@color/success_600" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_md"
+                                android:layout_weight="1"
+                                android:text="@string/bind_phone"
+                                style="@style/TextAppearance.MineGuard.Body"
+                                android:textColor="@color/text_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_expand_more"
+                                app:tint="@color/text_tertiary" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="16dp"
-                    android:background="@color/divider" />
+            </com.google.android.material.card.MaterialCardView>
 
-                <!-- 绑定/换绑手机号 -->
-                <LinearLayout
-                    android:id="@+id/ll_bind_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_phone"
-                        android:tint="@color/primary_green" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="@string/bind_phone"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_expand_more"
-                        android:tint="@color/text_secondary" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- 其他功能列表 -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- 其他功能列表 -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/other_menu_card"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginHorizontal="@dimen/margin_md"
+                android:layout_marginTop="@dimen/margin_md"
+                app:cardCornerRadius="@dimen/corner_radius_lg"
+                app:cardElevation="@dimen/card_elevation_sm"
+                app:cardBackgroundColor="@color/surface"
+                app:layout_constraintTop_toBottomOf="@+id/account_menu_card"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <!-- 使用说明 -->
                 <LinearLayout
-                    android:id="@+id/ll_user_guide"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_help"
-                        android:tint="@color/primary_orange" />
+                    <!-- 使用说明 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/ll_user_guide"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/menu_item_height"
+                        android:layout_margin="@dimen/spacing_sm"
+                        app:cardCornerRadius="@dimen/corner_radius_md"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/warning_50"
+                        app:rippleColor="@color/warning_100">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="@string/user_guide"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="@dimen/padding_lg">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_expand_more"
-                        android:tint="@color/text_secondary" />
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_help"
+                                app:tint="@color/warning_600" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_md"
+                                android:layout_weight="1"
+                                android:text="@string/user_guide"
+                                style="@style/TextAppearance.MineGuard.Body"
+                                android:textColor="@color/text_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_expand_more"
+                                app:tint="@color/text_tertiary" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- 第三方信息收集说明 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/ll_privacy_policy"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/menu_item_height"
+                        android:layout_margin="@dimen/spacing_sm"
+                        app:cardCornerRadius="@dimen/corner_radius_md"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/secondary_50"
+                        app:rippleColor="@color/secondary_100">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="@dimen/padding_lg">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_privacy"
+                                app:tint="@color/secondary_600" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_md"
+                                android:layout_weight="1"
+                                android:text="@string/privacy_policy"
+                                style="@style/TextAppearance.MineGuard.Body"
+                                android:textColor="@color/text_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_expand_more"
+                                app:tint="@color/text_tertiary" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- 关于我们 -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/ll_about"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/menu_item_height"
+                        android:layout_margin="@dimen/spacing_sm"
+                        app:cardCornerRadius="@dimen/corner_radius_md"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/error_50"
+                        app:rippleColor="@color/error_100">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="@dimen/padding_lg">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_info"
+                                app:tint="@color/error_600" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_md"
+                                android:layout_weight="1"
+                                android:text="@string/about"
+                                style="@style/TextAppearance.MineGuard.Body"
+                                android:textColor="@color/text_primary" />
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_size_md"
+                                android:layout_height="@dimen/icon_size_md"
+                                android:src="@drawable/ic_expand_more"
+                                app:tint="@color/text_tertiary" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="16dp"
-                    android:background="@color/divider" />
+            </com.google.android.material.card.MaterialCardView>
 
-                <!-- 第三方信息收集说明 -->
-                <LinearLayout
-                    android:id="@+id/ll_privacy_policy"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp">
+            <!-- 底部间距 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_xl"
+                app:layout_constraintTop_toBottomOf="@+id/other_menu_card"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_privacy"
-                        android:tint="@color/primary_purple" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="@string/privacy_policy"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+    </androidx.core.widget.NestedScrollView>
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_expand_more"
-                        android:tint="@color/text_secondary" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="16dp"
-                    android:background="@color/divider" />
-
-                <!-- 关于我们 -->
-                <LinearLayout
-                    android:id="@+id/ll_about"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="16dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_info"
-                        android:tint="@color/primary_red" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="@string/about"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_expand_more"
-                        android:tint="@color/text_secondary" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- 底部间距 -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="32dp" />
-
-    </LinearLayout>
-
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

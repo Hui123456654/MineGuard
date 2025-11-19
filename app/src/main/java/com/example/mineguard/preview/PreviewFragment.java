@@ -36,7 +36,7 @@ public class PreviewFragment extends Fragment implements
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1;
-    private String mParam2;
+    private String mParam2;//没用上
 
     // UI组件
     private RecyclerView recyclerViewDevices;

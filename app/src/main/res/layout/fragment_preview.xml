@@ -1,310 +1,349 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/background_gray"
+    android:background="@color/neutral_50"
+    android:fitsSystemWindows="false"
     tools:context=".preview.PreviewFragment">
 
-    <!-- 顶部工具栏 -->
-    <LinearLayout
+    <!-- 使用ConstraintLayout实现更好的响应式布局 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:background="@android:color/white"
-        android:elevation="2dp">
+        android:layout_height="match_parent">
 
-        <!-- 左侧操作区 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <Button
-                android:id="@+id/btn_refresh"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@drawable/bg_button_outline"
-                android:text="↻"
-                android:textSize="16sp"
-                android:textColor="@color/primary_blue"
-                android:padding="0dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="摄像头监控"
-                android:textSize="18sp"
-                android:textColor="@color/text_primary"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <!-- 中间空白区域 -->
-        <View
+        <!-- 顶部工具栏 -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/toolbar_card"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
-        <!-- 右侧操作区 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginHorizontal="@dimen/margin_md"
+            android:layout_marginTop="@dimen/margin_md"
+            app:cardCornerRadius="@dimen/corner_radius_lg"
+            app:cardElevation="@dimen/card_elevation_sm"
+            app:cardBackgroundColor="@color/surface"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <TextView
-                android:id="@+id/tv_device_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 个设备"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:background="@drawable/bg_status_default"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:layout_marginEnd="8dp" />
-
-            <Button
-                android:id="@+id/btn_split_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:text="视频预览"
-                android:textSize="12sp"
-                android:background="@drawable/bg_button_primary"
-                android:textColor="@android:color/white"
-                android:paddingHorizontal="12dp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!-- 主内容区域 -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <!-- 设备列表视图 -->
-        <LinearLayout
-            android:id="@+id/layout_device_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="visible">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_devices"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:padding="8dp"
-                android:clipToPadding="false"
-                android:scrollbars="vertical" />
-
-        </LinearLayout>
-
-        <!-- 视频预览视图 -->
-        <FrameLayout
-            android:id="@+id/layout_video_preview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
-
-            <!-- 视频预览容器 -->
-            <FrameLayout
-                android:id="@+id/video_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <!-- 控制按钮覆盖层 -->
-            <com.example.mineguard.preview.view.ControlButtonsView
-                android:id="@+id/control_buttons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_margin="16dp"
-                android:visibility="gone" />
-
-            <!-- 分屏模式选择器 -->
             <LinearLayout
-                android:id="@+id/split_mode_selector"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_margin="16dp"
-                android:background="@drawable/bg_button_primary"
-                android:orientation="vertical"
-                android:padding="8dp"
-                android:visibility="gone">
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_md"
+                android:gravity="center_vertical">
 
-                <Button
-                    android:id="@+id/btn_mode_single"
+                <!-- 左侧操作区 -->
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="单画面"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/white"
-                    android:background="@android:color/transparent"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:paddingHorizontal="12dp" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <Button
-                    android:id="@+id/btn_mode_quad"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="四画面"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/white"
-                    android:background="@android:color/transparent"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:paddingHorizontal="12dp" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_refresh"
+                        style="@style/Widget.MineGuard.Button.Text"
+                        android:layout_width="@dimen/control_button_size"
+                        android:layout_height="@dimen/control_button_size"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        app:icon="@drawable/ic_refresh"
+                        app:iconSize="@dimen/icon_size_md"
+                        app:iconTint="@color/primary_600"/>
 
-                <Button
-                    android:id="@+id/btn_mode_nine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="九画面"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/white"
-                    android:background="@android:color/transparent"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:paddingHorizontal="12dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_sm"
+                        android:text="摄像头监控"
+                        style="@style/TextAppearance.MineGuard.Headline"
+                        android:textSize="@dimen/text_size_xl"/>
 
-                <Button
-                    android:id="@+id/btn_mode_sixteen"
+                </LinearLayout>
+
+                <!-- 中间空白区域 -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+
+                <!-- 右侧操作区 -->
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="十六画面"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/white"
-                    android:background="@android:color/transparent"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:paddingHorizontal="12dp" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/tv_device_count"
+                        style="@style/Widget.MineGuard.Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 个设备"
+                        android:layout_marginEnd="@dimen/margin_sm"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_split_mode"
+                        style="@style/Widget.MineGuard.Button.Primary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/button_height"
+                        android:text="视频预览"
+                        app:icon="@drawable/ic_video_camera"
+                        app:iconGravity="textEnd"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <!-- 视频切换按钮 -->
-            <LinearLayout
-                    android:id="@+id/video_switch_controls"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal"
-                    android:background="@drawable/bg_control_panel"
-                    android:padding="8dp"
-                    android:visibility="gone">                                                                                                                                                                 android:visibility="gone">
+        </com.google.android.material.card.MaterialCardView>
 
-                <Button
-                    android:id="@+id/btn_previous_page"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="上一页"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/bg_button_secondary"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:paddingHorizontal="16dp"
-                    android:layout_marginEnd="8dp" />
+        <!-- 分屏模式选择器 -->
+        <LinearLayout
+            android:id="@+id/split_mode_selector"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_md"
+            android:background="@color/surface"
+            android:elevation="@dimen/card_elevation_md"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_md"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_card"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="选择分屏模式"
+                style="@style/TextAppearance.MineGuard.Subtitle" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_md"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_mode_single"
+                    style="@style/Widget.MineGuard.Button.Secondary"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_margin="@dimen/spacing_sm"
+                    android:layout_weight="1"
+                    android:text="1分屏" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_mode_quad"
+                    style="@style/Widget.MineGuard.Button.Secondary"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_margin="@dimen/spacing_sm"
+                    android:layout_weight="1"
+                    android:text="4分屏" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_mode_nine"
+                    style="@style/Widget.MineGuard.Button.Secondary"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_margin="@dimen/spacing_sm"
+                    android:layout_weight="1"
+                    android:text="9分屏" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_mode_sixteen"
+                    style="@style/Widget.MineGuard.Button.Secondary"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_margin="@dimen/spacing_sm"
+                    android:layout_weight="1"
+                    android:text="16分屏" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- 主内容区域 -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margin_md"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_card"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- 设备列表视图 -->
+            <LinearLayout
+                android:id="@+id/layout_device_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView_devices"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="@dimen/margin_md"
+                    android:paddingVertical="@dimen/spacing_sm"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical"
+                    tools:listitem="@layout/item_device_card" />
+
+            </LinearLayout>
+
+            <!-- 视频预览视图 -->
+            <FrameLayout
+                android:id="@+id/layout_video_preview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <!-- 视频预览容器 -->
+                <FrameLayout
+                    android:id="@+id/video_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <!-- 视频切换控制 -->
+                <LinearLayout
+                    android:id="@+id/video_switch_controls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_margin="@dimen/margin_md"
+                    android:background="@color/surface"
+                    android:elevation="@dimen/card_elevation_sm"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_md"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_status_info"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="连接状态"
+                        style="@style/TextAppearance.MineGuard.Body"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tv_bottom_device_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 设备"
+                        style="@style/TextAppearance.MineGuard.Caption"
+                        android:textColor="@color/text_tertiary" />
+
+                </LinearLayout>
+
+                <!-- 页面信息控制 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="@dimen/margin_md"
+                    android:background="@color/surface"
+                    android:elevation="@dimen/card_elevation_sm"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_md">
+
+                    <TextView
+                        android:id="@+id/tv_page_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="第 1 页，共 1 页"
+                        style="@style/TextAppearance.MineGuard.Caption"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="@dimen/spacing_sm" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_previous_page"
+                            style="@style/Widget.MineGuard.Button.Text"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/button_height"
+                            android:layout_marginEnd="@dimen/spacing_sm"
+                            android:layout_weight="1"
+                            android:text="上一页"
+                            app:icon="@drawable/ic_expand_more"
+                            app:iconGravity="textStart" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_next_page"
+                            style="@style/Widget.MineGuard.Button.Text"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/button_height"
+                            android:layout_marginStart="@dimen/spacing_sm"
+                            android:layout_weight="1"
+                            android:text="下一页"
+                            app:icon="@drawable/ic_expand_more"
+                            app:iconGravity="textEnd" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- 控制按钮覆盖层 -->
+                <com.example.mineguard.preview.view.ControlButtonsView
+                    android:id="@+id/control_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="@dimen/margin_md"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <!-- 空状态提示 -->
+            <LinearLayout
+                android:id="@+id/layout_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="@dimen/padding_xl"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_xl"
+                    android:layout_height="@dimen/icon_size_xl"
+                    android:src="@drawable/ic_camera"
+                    android:alpha="0.6"
+                    android:tint="@color/text_tertiary" />
 
                 <TextView
-                    android:id="@+id/tv_page_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1/1"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/white"
-                    android:layout_marginHorizontal="16dp"
-                    android:gravity="center" />
+                    android:layout_marginTop="@dimen/margin_lg"
+                    android:text="暂无设备"
+                    style="@style/TextAppearance.MineGuard.Subtitle"
+                    android:textColor="@color/text_secondary" />
 
-                <Button
-                    android:id="@+id/btn_next_page"
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:text="下一页"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/bg_button_secondary"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:paddingHorizontal="16dp"
-                    android:layout_marginStart="8dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:text="请检查设备连接状态"
+                    style="@style/TextAppearance.MineGuard.Caption"
+                    android:textColor="@color/text_tertiary" />
 
             </LinearLayout>
 
         </FrameLayout>
 
-        <!-- 空状态提示 -->
-        <LinearLayout
-            android:id="@+id/layout_empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:visibility="gone">
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/ic_camera"
-                android:alpha="0.5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="暂无设备"
-                android:textSize="16sp"
-                android:textColor="@color/text_secondary" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="请检查设备连接状态"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-    <!-- 底部状态栏 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:background="@android:color/white"
-        android:elevation="2dp">
-
-        <TextView
-            android:id="@+id/tv_status_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="设备列表"
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary" />
-
-        <TextView
-            android:id="@+id/tv_bottom_device_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0 个设备"
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

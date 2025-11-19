@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             // 获取系统栏（状态栏和导航栏）的 Insets
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             // 为根视图设置 padding，使内容不与系统栏重叠
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 20);
             // 返回原始 insets，让子视图也能处理
             return insets;
         });

@@ -1,78 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.MineGuard.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/card_background">
+    android:layout_marginHorizontal="@dimen/margin_md"
+    android:layout_marginVertical="@dimen/margin_sm">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/padding_lg">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/margin_md">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/alarm_trends"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                style="@style/TextAppearance.MineGuard.Subtitle" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="@drawable/time_span_background"
-                android:padding="4dp">
+                android:padding="@dimen/padding_xs">
 
                 <TextView
                     android:id="@+id/tv_time_one_hour"
+                    style="@style/Widget.MineGuard.TimeSpanChip.Selected"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/time_one_hour"
-                    android:textColor="@color/primary_blue"
-                    android:textSize="12sp"
-                    android:padding="8dp"
-                    android:background="@drawable/time_span_selected" />
+                    android:text="@string/time_one_hour" />
 
                 <TextView
                     android:id="@+id/tv_time_one_week"
+                    style="@style/Widget.MineGuard.TimeSpanChip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/time_one_week"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    android:padding="8dp" />
+                    android:text="@string/time_one_week" />
 
                 <TextView
                     android:id="@+id/tv_time_one_month"
+                    style="@style/Widget.MineGuard.TimeSpanChip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/time_one_month"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    android:padding="8dp" />
+                    android:text="@string/time_one_month" />
 
                 <TextView
                     android:id="@+id/tv_time_one_year"
+                    style="@style/Widget.MineGuard.TimeSpanChip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/time_one_year"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    android:padding="8dp" />
+                    android:text="@string/time_one_year" />
 
             </LinearLayout>
 
@@ -81,7 +69,7 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart_alarm_trends"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="@dimen/chart_height" />
 
     </LinearLayout>
 
