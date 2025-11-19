@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = "com.example.mineguard"
         minSdk = 33
-        targetSdk = 36
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -30,6 +30,8 @@ android {
 
 dependencies {
 
+    implementation("com.squareup.okhttp3:okhttp:3.9.0")
+    implementation("com.google.code.gson:gson:2.8.6")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.activity:activity:1.10.1")
@@ -45,4 +47,10 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    implementation("androidx.media3:media3-exoplayer-rtsp:1.4.1")
+    implementation("androidx.media3:media3-exoplayer:1.4.1")
+    implementation("androidx.media3:media3-ui:1.4.1")
+
+    implementation("org.videolan.android:libvlc-all:3.4.0")
 }
