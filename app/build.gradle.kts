@@ -30,8 +30,6 @@ android {
 
 dependencies {
 
-    implementation("com.squareup.okhttp3:okhttp:3.9.0")
-    implementation("com.google.code.gson:gson:2.8.6")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.activity:activity:1.10.1")
@@ -41,18 +39,16 @@ dependencies {
     
     // Chart library
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    
+    implementation("org.videolan.android:libvlc-all:3.5.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-
-    implementation("com.google.android.exoplayer:exoplayer-core:2.19.1")  // 核心库
-    implementation("com.google.android.exoplayer:exoplayer-ui:2.19.1")    // UI 库
-    implementation("com.google.android.exoplayer:exoplayer-rtsp:2.19.1")   // RTSP 支持
-    implementation("androidx.media3:media3-exoplayer-rtsp:1.4.1")
-    implementation("androidx.media3:media3-exoplayer:1.4.1")
-    implementation("androidx.media3:media3-ui:1.4.1")
-    implementation("org.videolan.android:libvlc-all:3.4.0")
+    
+    // 网络请求相关依赖
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 }

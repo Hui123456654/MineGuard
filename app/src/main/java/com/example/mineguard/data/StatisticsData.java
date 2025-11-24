@@ -4,7 +4,7 @@ import java.util.List;
 
 public class StatisticsData {
     private int totalAlarms;
-    private int processedAlarms;
+    private int unprocessedAlarms;
     private int totalDevices;
     private int onlineDevices;
     private List<AlarmTrendData> alarmTrendData;
@@ -14,9 +14,9 @@ public class StatisticsData {
 
     public StatisticsData() {}
 
-    public StatisticsData(int totalAlarms, int processedAlarms, int totalDevices, int onlineDevices) {
+    public StatisticsData(int totalAlarms, int unprocessedAlarms, int totalDevices, int onlineDevices) {
         this.totalAlarms = totalAlarms;
-        this.processedAlarms = processedAlarms;
+        this.unprocessedAlarms = unprocessedAlarms;
         this.totalDevices = totalDevices;
         this.onlineDevices = onlineDevices;
     }
@@ -30,12 +30,12 @@ public class StatisticsData {
         this.totalAlarms = totalAlarms;
     }
 
-    public int getProcessedAlarms() {
-        return processedAlarms;
+    public int getUnProcessedAlarms() {
+        return unprocessedAlarms;
     }
 
-    public void setProcessedAlarms(int processedAlarms) {
-        this.processedAlarms = processedAlarms;
+    public void setUnProcessedAlarms(int unprocessedAlarms) {
+        this.unprocessedAlarms = unprocessedAlarms;
     }
 
     public int getTotalDevices() {

@@ -7,14 +7,16 @@
     <string name="statistics_title">数据统计</string>
     <string name="today_overview">今日概览</string>
     <string name="total_alarms">报警总数</string>
-    <string name="processed_alarms">已处理数</string>
+    <string name="processed_alarms">未处理数</string>
     <string name="total_devices">设备总数</string>
     <string name="online_devices">在线设备数</string>
     <string name="alarm_trends">报警趋势</string>
     <string name="scene_statistics">场景报警统计</string>
     <string name="device_statistics">设备报警统计</string>
     <string name="type_statistics">报警类型统计</string>
-    
+    <string name="alarm_ranking">报警类型排行</string>
+    <string name="week_month_alarm_type_statistics">本周/本月报警类型统计</string>
+
     <!-- Time span options -->
     <string name="time_one_hour">1小时</string>
     <string name="time_one_week">1周</string>

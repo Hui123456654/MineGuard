@@ -64,7 +64,7 @@
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/tv_processed_alarms"
+                    android:id="@+id/tv_unprocessed_alarms"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"

@@ -21,15 +21,15 @@
             android:id="@+id/card_trends"
             layout="@layout/card_chart_trends" />
 
-        <!-- Scene Statistics Chart -->
+        <!-- Alarm Ranking Bar -->
         <include
-            android:id="@+id/card_scene_statistics"
-            layout="@layout/card_chart_pie" />
+            android:id="@+id/card_bar_statistics"
+            layout="@layout/card_chart_bar" />
 
-        <!-- Device Statistics Chart -->
+        <!-- Week/Month Alarm Type PieChart  -->
         <include
-            android:id="@+id/card_device_statistics"
-            layout="@layout/card_chart_pie" />
+            android:id="@+id/card_piechart_WeekMonthAlarmType"
+            layout="@layout/card_chart_pie2" />
 
         <!-- Alarm Type Statistics Chart -->
         <include
