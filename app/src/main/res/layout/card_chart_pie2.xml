@@ -43,7 +43,7 @@
                     android:id="@+id/tv_time_one_week"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="一周"
+                    android:text="@string/time_one_week"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     android:padding="8dp" />
@@ -52,7 +52,7 @@
                     android:id="@+id/tv_time_one_month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="一月"
+                    android:text="@string/time_one_month"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     android:padding="8dp" />

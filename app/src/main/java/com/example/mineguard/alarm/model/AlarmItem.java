@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class AlarmItem implements Serializable {
     public static final int STATUS_UNPROCESSED = 0;  // 未处理
     public static final int STATUS_PROCESSED = 1;    // 已处理
+    public static final int STATUS_FALSE_ALARM = 2;  // 误报 (新增)
     public static final String LEVEL_WARNING = "0";  // 警告级别
     public static final String LEVEL_CRITICAL = "1"; // 严重级别
 
@@ -200,5 +201,25 @@ public class AlarmItem implements Serializable {
      */
     public String getStatusDescription() {
         return status == STATUS_PROCESSED ? "已处理" : "未处理";
+    }
+    /**
+     * 是否为误报
+     */
+    public boolean isFalseAlarm() {
+        return status == STATUS_FALSE_ALARM;
+    }
+
+    /**
+     * 获取状态对应的颜色 (将颜色逻辑封装在 Model 层)
+     */
+    public int getStatusColor() {
+        switch (status) {
+            case STATUS_PROCESSED:
+                return 0xFF43A047; // 绿色
+            case STATUS_FALSE_ALARM:
+                return 0xFFFF9800; // 橙色
+            default:
+                return 0xFFD32F2F; // 红色
+        }
     }
 }

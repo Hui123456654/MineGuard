@@ -18,10 +18,10 @@
     <string name="week_month_alarm_type_statistics">本周/本月报警类型统计</string>
 
     <!-- Time span options -->
-    <string name="time_one_hour">1小时</string>
-    <string name="time_one_week">1周</string>
-    <string name="time_one_month">1月</string>
-    <string name="time_one_year">1年</string>
+    <string name="time_one_hour">一小时</string>
+    <string name="time_one_week">一周</string>
+    <string name="time_one_month">一月</string>
+    <string name="time_one_year">一年</string>
     
     <!-- Profile strings -->
     <string name="account_management">账户管理</string>

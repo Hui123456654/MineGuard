@@ -2,8 +2,6 @@ package com.example.mineguard.home;
 import static com.example.mineguard.MyApplication.globalIP;
 
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.widget.LinearLayout;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +21,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -49,8 +46,8 @@ import okhttp3.Callback;
 import java.io.IOException;
 import okhttp3.Call;
 import android.widget.Toast;
-import java.util.HashMap;
-import java.util.Map;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import java.util.Collections;
 
 public class HomeFragment extends Fragment {
 
@@ -83,9 +80,7 @@ public class HomeFragment extends Fragment {
 
 
     // 排行榜成员变量
-    //private HorizontalBarChart chartAlarmRanking;  // 报警类型排行榜图表
-    private RadialRankingView radialRankingView;     // 新增：同心圆 View
-    private LinearLayout llRankingLegend;            // 新增：底部图例容器
+    private HorizontalBarChart chartAlarmRanking;  // 报警类型排行榜图表
     private TextView tvRankingTimeOneWeek;  // 排行榜周切换按钮
     private TextView tvRankingTimeOneMonth;  // 排行榜月切换按钮
     private JSONObject apiWeekTop;  // 存储周排行数据
@@ -164,12 +159,10 @@ public class HomeFragment extends Fragment {
         tvTimeOneYear = view.findViewById(R.id.tv_time_one_year);
 
         // 新增初始化代码
-        //chartAlarmRanking = view.findViewById(R.id.card_bar_statistics).findViewById(R.id.bar_chart);
-        View cardBar = view.findViewById(R.id.card_bar_statistics);
-        radialRankingView = cardBar.findViewById(R.id.radial_ranking_view);
-        llRankingLegend = cardBar.findViewById(R.id.ll_ranking_legend); // 绑定布局里的容器
+        chartAlarmRanking = view.findViewById(R.id.card_bar_statistics).findViewById(R.id.bar_chart);
         tvRankingTimeOneWeek = view.findViewById(R.id.card_bar_statistics).findViewById(R.id.tv_time_one_week);
         tvRankingTimeOneMonth = view.findViewById(R.id.card_bar_statistics).findViewById(R.id.tv_time_one_month);
+        setupHorizontalChart();
 
         // 初始化新饼图相关视图
         chartWeekMonthalarmType = view.findViewById(R.id.card_piechart_WeekMonthAlarmType).findViewById(R.id.pie_chart);
@@ -179,12 +172,11 @@ public class HomeFragment extends Fragment {
 
         // Chart title views
         TextView tvBarChartTitle = view.findViewById(R.id.card_bar_statistics).findViewById(R.id.tv_chart_title);
-        tvWeekMonthAlarmTypeTitle.setText(R.string.week_month_alarm_type_statistics);
+        //tvWeekMonthAlarmTypeTitle.setText(R.string.week_month_alarm_type_statistics);
         //tvTypeChartTitle = view.findViewById(R.id.card_type_statistics).findViewById(R.id.tv_chart_title);
 
         // Set chart titles
         tvBarChartTitle.setText(R.string.alarm_ranking); // 设置正确的标题
-       // tvTypeChartTitle.setText(R.string.type_statistics);
     }
 
     private void setupTimeSpanListeners() {
@@ -646,71 +638,118 @@ public class HomeFragment extends Fragment {
 //        }
         rankingData = new ArrayList<>();
         rankingData.add(new AlarmRankingData("余煤检测", 25));
-        rankingData.add(new AlarmRankingData("旋转器检测", 16));
+        rankingData.add(new AlarmRankingData("旋转器检测", 17));
         rankingData.add(new AlarmRankingData("挂钩检测分割版", 9));
         rankingData.add(new AlarmRankingData("人员入侵监测", 3));
 
-        // === 修改部分开始：不再操作 BarChart，而是操作 RadialView 和 Legend ===
+        // ==========================================
+        // 2. 直接在此处更新图表 UI
+        // ==========================================
 
-        // 1. 设置圆环数据
-        if (radialRankingView != null) {
-            radialRankingView.setData(rankingData);
+        if (chartAlarmRanking == null) return;
+
+        if (rankingData == null || rankingData.isEmpty()) {
+            chartAlarmRanking.clear();
+            return;
         }
+        // --- 反转数据 ---说明：rankingData 是降序（大->小），但 BarChart 默认从下往上画（Index 0 在最下）。
+        // 为了让“第一名”显示在最上面，我们需要构造一个反转的列表给图表。
+        List<AlarmRankingData> chartDataList = new ArrayList<>(rankingData);
+        Collections.reverse(chartDataList);
 
-        // 2. 动态生成底部图例 (Legend)
-        if (llRankingLegend != null) {
-            llRankingLegend.removeAllViews(); // 清空旧图例
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<String> typeNames = new ArrayList<>();
 
-            for (int i = 0; i < rankingData.size(); i++) {
-                AlarmRankingData item = rankingData.get(i);
-                int color = radialRankingView.getColorForIndex(i); // 获取圆环对应的颜色
+        // 遍历数据填充 Entry
+        for (int i = 0; i < chartDataList.size(); i++) {
+            AlarmRankingData item = chartDataList.get(i);
 
-                // 创建图例行视图
-                View legendItem = createLegendItemView(item, color);
-                llRankingLegend.addView(legendItem);
-            }
+            entries.add(new BarEntry(i, item.getValue()));
+            typeNames.add(item.getName());
         }
+        // --- 动态调整高度 ---
+        // 基础高度 40dp + 每条数据 60dp，保证显示全且不挤
+        int itemHeightDp = 60;
+        int totalHeightDp = 40 + (chartDataList.size() * itemHeightDp);
+
+        ViewGroup.LayoutParams params = chartAlarmRanking.getLayoutParams();
+        params.height = dpToPx(totalHeightDp);
+        chartAlarmRanking.setLayoutParams(params);
+
+        // --- 设置数据 ---
+        BarDataSet set1;
+        if (chartAlarmRanking.getData() != null &&
+                chartAlarmRanking.getData().getDataSetCount() > 0) {
+            set1 = (BarDataSet) chartAlarmRanking.getData().getDataSetByIndex(0);
+            set1.setValues(entries);
+            chartAlarmRanking.getData().notifyDataChanged();
+            chartAlarmRanking.notifyDataSetChanged();
+        } else {
+            set1 = new BarDataSet(entries, "报警类型");
+
+            // 设置单一颜色 (橙色)
+            set1.setColor(Color.parseColor("#F97316"));
+
+            // 数值样式
+            set1.setValueTextSize(12f);
+            set1.setValueTextColor(Color.parseColor("#666666"));
+            // 整数格式化
+            set1.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return String.valueOf((int) value);
+                }
+            });
+
+            ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+            dataSets.add(set1);
+
+            BarData data = new BarData(dataSets);
+            data.setBarWidth(0.5f);
+            chartAlarmRanking.setData(data);
+        }
+        // 设置 X 轴标签
+        chartAlarmRanking.getXAxis().setValueFormatter(new IndexAxisValueFormatter(typeNames));
+        chartAlarmRanking.getXAxis().setLabelCount(typeNames.size()); // 强制显示所有标签
+
+        chartAlarmRanking.invalidate(); // 刷新
     }
-    // 辅助方法：创建底部的图例行 (圆点 - 名称 - 数值)
-    private View createLegendItemView(AlarmRankingData item, int color) {
-        LinearLayout row = new LinearLayout(getContext());
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(android.view.Gravity.CENTER_VERTICAL);
-        row.setPadding(0, 8, 0, 8); // 上下间距
+    // 辅助方法
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
+    }
+    private void setupHorizontalChart() {
+        if (chartAlarmRanking == null) return;
 
-        // 1. 颜色圆点
-        View dot = new View(getContext());
-        LinearLayout.LayoutParams dotParams = new LinearLayout.LayoutParams(24, 24); // 8dp大小
-        dotParams.setMargins(0, 0, 24, 0); // 右边距
-        dot.setLayoutParams(dotParams);
+        chartAlarmRanking.setDrawBarShadow(false);
+        chartAlarmRanking.setDrawValueAboveBar(true);
+        chartAlarmRanking.getDescription().setEnabled(false); // 隐藏描述
+        chartAlarmRanking.setMaxVisibleValueCount(60);
+        chartAlarmRanking.setPinchZoom(false); // 禁止缩放
+        chartAlarmRanking.setScaleEnabled(false);
+        chartAlarmRanking.setDoubleTapToZoomEnabled(false);
 
-        // 绘制圆点背景
-        android.graphics.drawable.GradientDrawable shape = new android.graphics.drawable.GradientDrawable();
-        shape.setShape(android.graphics.drawable.GradientDrawable.OVAL);
-        shape.setColor(color);
-        dot.setBackground(shape);
+        // 隐藏图例
+        chartAlarmRanking.getLegend().setEnabled(false);
 
-        // 2. 报警名称
-        TextView tvName = new TextView(getContext());
-        tvName.setText(item.getName());
-        tvName.setTextColor(Color.parseColor("#333333"));
-        tvName.setTextSize(14);
-        // 让名字占据中间剩余空间
-        LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(0, -2, 1.0f);
-        tvName.setLayoutParams(nameParams);
+        // 配置 X 轴 (显示类型名称，在左侧)
+        XAxis xAxis = chartAlarmRanking.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // 水平图中 BOTTOM 即左侧
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setTextSize(13f);
+        xAxis.setTextColor(Color.parseColor("#333333"));
 
-        // 3. 报警数值
-        TextView tvValue = new TextView(getContext());
-        tvValue.setText(item.getValue() + " 次");
-        tvValue.setTextColor(color); // 数值颜色和图表一致，便于对应
-        tvValue.setTextSize(14);
-        tvValue.setTypeface(null, android.graphics.Typeface.BOLD);
+        // 配置 Y 轴 (隐藏上下侧的线条和数值，只看条形)
+        chartAlarmRanking.getAxisLeft().setDrawAxisLine(false);
+        chartAlarmRanking.getAxisLeft().setDrawGridLines(false);
+        chartAlarmRanking.getAxisLeft().setDrawLabels(false); // 不显示底部数值
 
-        row.addView(dot);
-        row.addView(tvName);
-        row.addView(tvValue);
+        chartAlarmRanking.getAxisRight().setEnabled(false); // 隐藏右侧轴
 
-        return row;
+        chartAlarmRanking.setFitBars(true); // 使条形对齐
+        chartAlarmRanking.animateY(1000);   // 进场动画
     }
 
     // 从API数据生成排行榜数据

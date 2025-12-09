@@ -153,9 +153,26 @@ public class AlarmDetailDialog extends DialogFragment {
         
         // 设置状态
         int statusValue = alarm.getStatus();
-        String statusText = statusValue == 0 ? "未处理" : "已处理";
-        tvStatus.setText(statusText);
-        setStatusStyle(tvStatus, statusText);
+        switch (statusValue) {
+            case 1:
+                tvStatus.setText("已处理");
+                tvStatus.setTextColor(0xFF43A047);
+                tvStatus.setBackgroundResource(R.drawable.bg_status_processed); // 绿色边框
+                break;
+
+            case 2:
+                tvStatus.setText(" 误报 ");
+                tvStatus.setTextColor(0xFFFF9800);
+                tvStatus.setBackgroundResource(R.drawable.bg_status_falsealarm); // cheng色边框
+                break;
+
+            case 0:
+            default:
+                tvStatus.setText("未处理");
+                tvStatus.setTextColor(0xFFD32F2F);
+                tvStatus.setBackgroundResource(R.drawable.bg_status_unprocessed); // 红色边框
+                break;
+        }
         
         // 设置处理信息
         if (alarm.getProcessInfo() != null && !alarm.getProcessInfo().isEmpty()) {
@@ -184,25 +201,6 @@ public class AlarmDetailDialog extends DialogFragment {
             tvProcessTime.setVisibility(View.VISIBLE);
         } else {
             tvProcessTime.setVisibility(View.GONE);
-        }
-    }
-
-    private void setStatusStyle(TextView tvStatus, String status) {
-        switch (status) {
-            case "未处理":
-                tvStatus.setTextColor(0xFFFF5252); // 红色文字
-                tvStatus.setBackgroundResource(R.drawable.bg_status_unprocessed); // 红色边框
-                break;
-            case "处理中":
-                tvStatus.setTextColor(0xFFFFA726); // 橙色文字
-                break;
-            case "已处理":
-                tvStatus.setTextColor(0xFF66BB6A); // 绿色文字
-                tvStatus.setBackgroundResource(R.drawable.bg_status_processed); // 绿色边框
-                break;
-            default:
-                tvStatus.setTextColor(0xFF757575); // 灰色文字
-                break;
         }
     }
 

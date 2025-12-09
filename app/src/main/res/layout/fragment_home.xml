@@ -102,11 +102,6 @@
                     android:id="@+id/card_piechart_WeekMonthAlarmType"
                     layout="@layout/card_chart_pie2" />
 
-                <include
-                    android:id="@+id/card_overview"
-                    layout="@layout/card_statistics_overview"
-                    android:visibility="gone" />
-
             </LinearLayout>
 
         </LinearLayout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="140dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_popup_card"
+    android:elevation="8dp"
+    android:paddingVertical="4dp">
+
+    <TextView
+        android:id="@+id/tvMenuProcessed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:text="●  标记为已处理"
+        android:textColor="#43A047"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginHorizontal="10dp"
+        android:background="#F0F0F0" />
+
+    <TextView
+        android:id="@+id/tvMenuFalseAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:text="●  标记为误报"
+        android:textColor="#FB8C00"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
