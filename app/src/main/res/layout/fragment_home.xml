@@ -51,9 +51,10 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
+
                         <include
                             android:id="@+id/card_header_overview"
-                            layout="@layout/card_header_overview"/>
+                            layout="@layout/card_header_overview" />
                     </LinearLayout>
 
                     <LinearLayout

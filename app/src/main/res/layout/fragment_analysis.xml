@@ -105,8 +105,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
-                tools:visibility="gone">
-                <SurfaceView android:id="@+id/sv_cam_main" android:layout_width="match_parent" android:layout_height="match_parent" />
+                tools:visibility="gone"
+                app:surface_type="texture_view">
+                <androidx.media3.ui.PlayerView
+                    android:id="@+id/player_view_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:use_controller="false"
+                    app:resize_mode="fit" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="top|center_horizontal" android:padding="8dp" android:text="Main Camera (Live)" android:textColor="#FFF" android:textSize="16sp" android:background="#80000000" />
             </FrameLayout>
         </FrameLayout>
