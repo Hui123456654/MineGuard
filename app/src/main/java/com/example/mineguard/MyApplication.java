@@ -14,7 +14,7 @@ public class MyApplication extends Application {
         super.onCreate();
         // 在这里可以对全局变量进行初始化
 //        globalIP1 = "10.34.8.66";
-        globalIP = "192.168.31.225";
+        globalIP = "192.168.31.30";
 //        globalRtsp= "rtsp://admin:cs123456@192.168.1.108";
     }
 

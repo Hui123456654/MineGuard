@@ -2,15 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_analysis"
-        android:icon="@drawable/icon_data_vector"
+        android:icon="@drawable/icon_analysis_vector"
         android:title="智能分析" />
 
-    <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/icon_data_vector"
-        android:title="数据" />
     <item
         android:id="@+id/nav_alarms"
         android:icon="@drawable/icon_alarm_vector"
         android:title="报警查询" />
+
+    <item
+        android:id="@+id/nav_configuration"
+        android:icon="@drawable/icon_configuration_vector"
+        android:title="系统配置" />
+
 </menu>
