@@ -18,9 +18,22 @@ import com.example.mineguard.analysis.AnalysisFragment;  // 导入 智能分析
 import com.example.mineguard.alarm.AlarmFragment;
 import com.example.mineguard.configuration.ConfigurationFragment;  // 导入 配置页
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import okhttp3.*;
+import java.io.IOException;
+import android.widget.Toast;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
+    private final String[] CAMERA_IPS = {
+            "192.168.1.64",
+            "192.168.1.65",
+            "192.168.1.66",
+            "192.168.1.67"
+    };
+    // 对应的 ID（必须与 IP 顺序一致）
+    private  String[] CAMERA_IDS = {"CAM_01", "CAM_02", "CAM_03", "CAM_04"};
     private Fragment[] fragments = new Fragment[3];
     private int currentIndex = 0;
     private WindowInsetsControllerCompat windowInsetsController;
@@ -78,5 +91,45 @@ public class MainActivity extends AppCompatActivity {
             transaction.hide(oldFrag).show(newFrag);
         }
         transaction.commit();
+    }
+
+    private void configureAllCameras() {
+        String myIp ="192.168.1.2"; // 获取本机 IP (方法需自行实现，见下文)
+        int myPort = 8888;
+        String myUri = "/alarm/info"; // 这里必须与 LocalServer 里的判断一致
+
+        OkHttpClient client = new OkHttpClient();
+
+        for (int i = 0; i < CAMERA_IPS.length; i++) {
+            String ip = CAMERA_IPS[i];
+            String id = CAMERA_IDS[i];
+
+            // 开启设备报警信息上传 URL
+            String url = "http://" + ip + ":5002/server/set/smart/event/on/";
+
+            // 参数构造
+            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("protocol", "http")
+                    .addFormDataPart("port", String.valueOf(myPort))
+                    .addFormDataPart("uri", myUri)
+                    .addFormDataPart("extend", id) // 关键：用这个区分是哪个相机
+                    .build();
+
+            Request request = new Request.Builder().url(url).post(body).build();
+
+            // 异步发送
+            final String currentIp = ip;
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "配置失败: " + currentIp, Toast.LENGTH_SHORT).show());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "配置成功: " + currentIp, Toast.LENGTH_SHORT).show());
+                }
+            });
+        }
     }
 }

@@ -16,6 +16,7 @@ public class AlarmItem implements Serializable {
     private String channel;       // 报警通道
     private String type;          // 报警类型
     private String level;         // 报警等级
+    private String algorithm_code;  //算法类型
     private String path;          // 图片相对路径
     private String video_path;    // 视频相对路径
     private String[] video_paths; // 视频路径列表
@@ -28,6 +29,12 @@ public class AlarmItem implements Serializable {
     private String location;      // 摄像机位置（camera_id有效时返回）
     private String flow;          // 摄像机流地址（camera_id有效时返回）
     private String processInfo;   // 保留处理信息
+
+    private int dataSource;         // 数据来源：1=普通报警, 3=四超报警, 6=煤量统计
+    private String exceedType;      // [接口3] 报警类型 (height, width, length, weight)
+    private String totalWeight;     // [接口6] 总煤量
+    private String statsDate;       // [接口6] 统计时间段
+
 
     public AlarmItem() {
     }
@@ -129,6 +136,14 @@ public class AlarmItem implements Serializable {
         this.ip = ip;
     }
 
+    public String getAlgorithm_code() {
+        return algorithm_code;
+    }
+
+    public void setAlgorithm_code(String algorithm_code) {
+        this.algorithm_code = algorithm_code;
+    }
+
     public String getName() {
         return name;
     }
@@ -209,6 +224,17 @@ public class AlarmItem implements Serializable {
         return status == STATUS_FALSE_ALARM;
     }
 
+    public int getDataSource() { return dataSource; }
+    public void setDataSource(int dataSource) { this.dataSource = dataSource; }
+
+    public String getExceedType() { return exceedType; }
+    public void setExceedType(String exceedType) { this.exceedType = exceedType; }
+
+    public String getTotalWeight() { return totalWeight; }
+    public void setTotalWeight(String totalWeight) { this.totalWeight = totalWeight; }
+
+    public String getStatsDate() { return statsDate; }
+    public void setStatsDate(String statsDate) { this.statsDate = statsDate; }
     /**
      * 获取状态对应的颜色 (将颜色逻辑封装在 Model 层)
      */

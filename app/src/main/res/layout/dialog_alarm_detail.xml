@@ -11,7 +11,6 @@
         android:background="@android:color/white"
         android:padding="16dp">
 
-        <!-- 标题栏 -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +21,6 @@
             android:gravity="center"
             android:layout_marginBottom="16dp" />
 
-        <!-- 图片区域 -->
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
@@ -33,7 +31,6 @@
             android:layout_marginBottom="16dp"
             android:contentDescription="报警图片" />
 
-        <!-- 基本信息区域 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +39,6 @@
             android:padding="12dp"
             android:layout_marginBottom="16dp">
 
-            <!-- 第一行：级别和状态 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,7 +79,6 @@
 
             </LinearLayout>
 
-            <!-- 报警ID -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +93,7 @@
                     android:textColor="#757575" />
 
                 <TextView
-                    android:id="@+id/tvDeviceName"
+                    android:id="@+id/tvAlarmID"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -108,7 +103,6 @@
 
             </LinearLayout>
 
-            <!-- 报警类型 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -123,7 +117,7 @@
                     android:textColor="#757575" />
 
                 <TextView
-                    android:id="@+id/tvAlgorithmType"
+                    android:id="@+id/tvType"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -132,8 +126,30 @@
                     android:textColor="#212121" />
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
 
-            <!-- 关联摄像头 -->
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="算法编码:"
+                    android:textSize="14sp"
+                    android:textColor="#757575" />
+
+                <TextView
+                    android:id="@+id/tvAlgorithmID"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ZYS001"
+                    android:textSize="14sp"
+                    android:textColor="#212121" />
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -148,7 +164,7 @@
                     android:textColor="#757575" />
 
                 <TextView
-                    android:id="@+id/tvScene"
+                    android:id="@+id/tvIP"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -158,7 +174,6 @@
 
             </LinearLayout>
 
-            <!-- 位置信息 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -183,7 +198,6 @@
 
             </LinearLayout>
 
-            <!-- 设备IP地址 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -192,7 +206,7 @@
                 <TextView
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:text="设备IP地址:"
+                    android:text="报警时间:"
                     android:textSize="14sp"
                     android:textColor="#757575" />
 
@@ -201,7 +215,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="192.168.0.100"
+                    android:text="2025-12-12 12:00:00"
                     android:textSize="14sp"
                     android:textColor="#212121" />
 
@@ -209,7 +223,6 @@
 
         </LinearLayout>
 
-        <!-- 处理信息区域 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -227,7 +240,6 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
-            <!-- 已显示的处理信息 -->
             <TextView
                 android:id="@+id/tvProcessInfo"
                 android:layout_width="match_parent"
@@ -239,7 +251,6 @@
                 android:padding="8dp"
                 android:visibility="gone" />
 
-            <!-- 输入处理信息 -->
             <EditText
                 android:id="@+id/etProcessInfo"
                 android:layout_width="match_parent"
@@ -254,7 +265,6 @@
                 android:gravity="top"
                 android:visibility="gone" />
 
-            <!-- 处理人 -->
             <TextView
                 android:id="@+id/tvProcessor"
                 android:layout_width="match_parent"
@@ -265,7 +275,6 @@
                 android:layout_marginTop="8dp"
                 android:visibility="gone" />
 
-            <!-- 处理时间 -->
             <TextView
                 android:id="@+id/tvProcessTime"
                 android:layout_width="match_parent"
@@ -278,7 +287,6 @@
 
         </LinearLayout>
 
-        <!-- 按钮区域 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -300,13 +308,13 @@
                 android:id="@+id/btnExport"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button_secondary"
                 android:text="导出图片"
-                android:textSize="14sp"
                 android:textColor="@android:color/white"
-                android:background="@drawable/bg_button_secondary" />
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btnClose"

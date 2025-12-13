@@ -53,7 +53,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
-    implementation("org.nanohttpd:nanohttpd:2.3.1")
 
     //推流
     // Media3 ExoPlayer 核心库
@@ -62,4 +61,12 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer-rtsp:1.2.0")
     // 播放器 UI 组件 (PlayerView)
     implementation("androidx.media3:media3-ui:1.2.0")
+
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("org.nanohttpd:nanohttpd:2.3.1")
+    implementation ("com.github.bumptech.glide:glide:4.12.0") // 用于加载本地图片
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation("org.nanohttpd:nanohttpd:2.3.1")
+
 }
