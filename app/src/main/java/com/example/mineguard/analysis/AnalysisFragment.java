@@ -37,7 +37,7 @@ public class AnalysisFragment extends Fragment {
     private PlayerView playerView;
     private ExoPlayer player;
     // 替换成你真实的 RTSP 地址
-    private String rtspUrl = "rtsp://admin:cs123456@192.168.31.108";
+    private String rtspUrl = "rtsp://192.168.31.64/live/raw";
 
     // === 新增：四宫格相关变量 ===
     private SurfaceView[] gridSurfaceViews = new SurfaceView[4]; // 存放 XML 里的 sv_cam_01 等

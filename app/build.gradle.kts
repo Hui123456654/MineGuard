@@ -53,6 +53,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
+    implementation("org.nanohttpd:nanohttpd:2.3.1")
+
     //推流
     // Media3 ExoPlayer 核心库
     implementation("androidx.media3:media3-exoplayer:1.2.0")
