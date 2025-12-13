@@ -171,6 +171,13 @@ public class ConfigurationFragment extends Fragment {
             }
 
             viewModel.addDevice(newItem); // <-- 调用 ViewModel 执行添加
+
+            // ================== 新增代码 ==================
+            // 新增设备后，也立即刷新连接
+            if (getActivity() instanceof com.example.mineguard.MainActivity) {
+                ((com.example.mineguard.MainActivity) getActivity()).manualRefreshAlarmConfig();
+            }
+            // =============================================
             Toast.makeText(getContext(), "已新增通道：" + newItem.getDeviceName(), Toast.LENGTH_SHORT).show();
             clearForm();
         });
@@ -185,6 +192,13 @@ public class ConfigurationFragment extends Fragment {
             DeviceItem newItem = getDeviceItemFromForm();
             viewModel.updateDevice(currentSelectedItem, newItem); // <-- 调用 ViewModel 执行修改
             currentSelectedItem = newItem; // 更新当前选中项的引用
+
+            // ================== 新增代码开始 ==================
+            // 3. 核心修改：通知 MainActivity 立即刷新连接，让新 IP 马上生效
+            if (getActivity() instanceof com.example.mineguard.MainActivity) {
+                ((com.example.mineguard.MainActivity) getActivity()).manualRefreshAlarmConfig();
+            }
+            // ================== 新增代码结束 ==================
             Toast.makeText(getContext(), "已更新通道信息：" + newItem.getDeviceName(), Toast.LENGTH_SHORT).show();
         });
 
