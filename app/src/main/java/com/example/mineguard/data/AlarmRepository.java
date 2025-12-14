@@ -26,4 +26,12 @@ public class AlarmRepository {
             alarmDao.insert(alarm);
         });
     }
+
+    // ============ 【新增】Repository 层的更新逻辑 ============
+    public void update(AlarmItem alarm) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            alarmDao.update(alarm);
+        });
+    }
+    // ======================================================
 }

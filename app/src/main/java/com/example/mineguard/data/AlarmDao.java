@@ -13,6 +13,11 @@ public interface AlarmDao {
     @Insert
     void insert(AlarmItem alarm);
 
+
+    // ============ 【新增】更新方法 ============
+    @androidx.room.Update
+    void update(AlarmItem alarm);
+    // ========================================
     // 查询所有数据，按 dbId 倒序排列 (最新的在最上面)
     // 返回 LiveData，这样界面可以自动更新
     @Query("SELECT * FROM alarm_table ORDER BY dbId DESC")

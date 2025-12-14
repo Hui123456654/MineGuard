@@ -32,6 +32,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
     public interface OnAlarmClickListener {
         void onAlarmClick(AlarmItem alarm);
         void onAlarmLongClick(AlarmItem alarm);
+        // 新增：当在列表中直接修改状态时调用
+        void onAlarmStatusChanged(AlarmItem alarm);
     }
 
     public AlarmAdapter(List<AlarmItem> alarmList, OnAlarmClickListener listener) {
@@ -216,6 +218,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                 alarm.setStatus(AlarmItem.STATUS_PROCESSED);
                 alarm.setSolve_time(currentTime);
                 updateItem(position); // 封装刷新逻辑
+                // 2. 【关键新增】通知 Fragment 数据变了，快去保存！
+                if (listener != null) {
+                    listener.onAlarmStatusChanged(alarm);
+                }
                 Toast.makeText(context, "已标记为已处理", Toast.LENGTH_SHORT).show();
                 popupWindow.dismiss();
             });
@@ -225,6 +231,11 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                 alarm.setStatus(AlarmItem.STATUS_FALSE_ALARM);
                 alarm.setSolve_time(currentTime);
                 updateItem(position); // 封装刷新逻辑
+
+                // 2. 【关键新增】通知 Fragment 数据变了
+                if (listener != null) {
+                    listener.onAlarmStatusChanged(alarm);
+                }
                 Toast.makeText(context, "已标记为误报", Toast.LENGTH_SHORT).show();
                 popupWindow.dismiss();
             });

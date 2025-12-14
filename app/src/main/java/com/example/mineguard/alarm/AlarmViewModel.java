@@ -26,4 +26,10 @@ public class AlarmViewModel extends AndroidViewModel {
     public void insert(AlarmItem alarm) {
         repository.insert(alarm);
     }
+
+    // ============ 【新增】ViewModel 层的更新逻辑 ============
+    public void update(AlarmItem alarm) {
+        repository.update(alarm);
+    }
+    // ======================================================
 }

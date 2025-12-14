@@ -74,6 +74,15 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmClick
     @Override
     public void onAlarmLongClick(AlarmItem alarm) { }
 
+    // 3. 【新增】实现我们在 Adapter 里新定义的接口方法
+    @Override
+    public void onAlarmStatusChanged(AlarmItem alarm) {
+        // 这里收到了 Adapter 传来的已经修改过状态的 alarm 对象
+        // 调用 ViewModel 更新数据库
+        if (alarmViewModel != null) {
+            alarmViewModel.update(alarm);
+        }
+    }
     @Override
     public void onFilterChanged(String t, String l, String s, String loc) { }
 }
