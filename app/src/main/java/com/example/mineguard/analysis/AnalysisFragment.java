@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -52,7 +52,8 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
     private RecyclerView rvAlarmList;
     private AlarmAdapter alarmAdapter;
     private List<AlarmItem> displayAlarmList = new ArrayList<>();
-
+    // 【新增】提示文字 TextView
+    private TextView tvNoAlarmData;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,7 +101,8 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         rvAlarmList.setLayoutManager(new LinearLayoutManager(getContext()));
         alarmAdapter = new AlarmAdapter(displayAlarmList);
         rvAlarmList.setAdapter(alarmAdapter);
-
+        // 【新增】初始化提示文字
+        tvNoAlarmData = view.findViewById(R.id.tv_no_alarm_data);
         setupClickListeners(view);
     }
 
@@ -148,6 +150,14 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             displayAlarmList.addAll(globalList);
             alarmAdapter.notifyDataSetChanged();
         }
+        // 【新增】根据列表内容判断显示提示文字或 RecyclerView
+        if (displayAlarmList.isEmpty()) {
+            tvNoAlarmData.setVisibility(View.VISIBLE);
+            rvAlarmList.setVisibility(View.GONE);
+        } else {
+            tvNoAlarmData.setVisibility(View.GONE);
+            rvAlarmList.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -157,6 +167,11 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
                 displayAlarmList.add(0, item);
                 alarmAdapter.notifyItemInserted(0);
                 rvAlarmList.scrollToPosition(0);
+                // 【新增】确保在收到新报警时隐藏“未查询到报警信息”
+                if (tvNoAlarmData.getVisibility() == View.VISIBLE) {
+                    tvNoAlarmData.setVisibility(View.GONE);
+                    rvAlarmList.setVisibility(View.VISIBLE);
+                }
             });
         }
     }

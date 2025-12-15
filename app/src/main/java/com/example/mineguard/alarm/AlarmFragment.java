@@ -27,6 +27,8 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmClick
 
     // 【修改 1】变量类型改为 SearchView
     private SearchView searchView;
+    // 【新增】空状态布局
+    private LinearLayout layoutEmpty;
 
     // 【新增】筛选按钮的容器 (为了绑定点击事件)
     private LinearLayout btnFilter;
@@ -61,7 +63,8 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmClick
 
         // 【新增】绑定筛选按钮 (对应 XML: android:id="@+id/btnFilter")
         btnFilter = view.findViewById(R.id.btnFilter);
-
+        // 【新增】绑定空状态布局 (对应 XML: android:id="@+id/layoutEmpty")
+        layoutEmpty = view.findViewById(R.id.layoutEmpty);
         // 2. 初始化列表
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         alarmAdapter = new AlarmAdapter(alarmList, this);
@@ -217,6 +220,16 @@ public class AlarmFragment extends Fragment implements AlarmAdapter.OnAlarmClick
             if (isMatch) {
                 alarmList.add(item);
             }
+        }
+        // 【核心新增逻辑】根据数据列表状态，控制视图显示
+        if (alarmList.isEmpty()) {
+            // 如果列表为空，显示提示，隐藏 RecyclerView
+            recyclerView.setVisibility(View.GONE);
+            layoutEmpty.setVisibility(View.VISIBLE);
+        } else {
+            // 如果列表非空，显示 RecyclerView，隐藏提示
+            recyclerView.setVisibility(View.VISIBLE);
+            layoutEmpty.setVisibility(View.GONE);
         }
         alarmAdapter.notifyDataSetChanged();
     }
