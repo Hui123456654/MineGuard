@@ -46,18 +46,6 @@
                 android:textColor="#999999"
                 android:textSize="11sp"
                 tools:text="192.168.1.101" />
-
-            <TextView
-                android:id="@+id/tv_device_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                tools:background="#E8F5E9"
-                tools:textColor="#2E7D32"
-                tools:text="在线" />
         </LinearLayout>
 
     </LinearLayout>

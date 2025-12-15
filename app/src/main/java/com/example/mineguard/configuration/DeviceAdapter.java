@@ -42,7 +42,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
         holder.tvArea.setText("所属区域: " + item.getArea());
         holder.tvIp.setText("IP地址: " + item.getIpAddress());
         holder.tvDevice.setText("设备类型: " + item.getDeviceType());
-        holder.tvAlgo.setText("算法服务器: " + item.getAlgoServer());
         holder.tvAlarm.setText("报警类型: " + item.getAlarmType());
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(item));
@@ -54,7 +53,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
     }
 
     static class DeviceViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvArea, tvIp, tvDevice, tvAlgo, tvAlarm;
+        TextView tvName, tvArea, tvIp, tvDevice,  tvAlarm;
 
         public DeviceViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -62,7 +61,6 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
             tvArea = itemView.findViewById(R.id.item_area);
             tvIp = itemView.findViewById(R.id.item_ip);
             tvDevice = itemView.findViewById(R.id.item_device_type);
-            tvAlgo = itemView.findViewById(R.id.item_algo);
             tvAlarm = itemView.findViewById(R.id.item_alarm);
         }
     }

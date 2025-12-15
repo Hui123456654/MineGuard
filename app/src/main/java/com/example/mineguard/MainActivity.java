@@ -110,9 +110,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-
     }
-
     private void switchFragment(int oldIndex, int newIndex) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment oldFrag = fragments[oldIndex];

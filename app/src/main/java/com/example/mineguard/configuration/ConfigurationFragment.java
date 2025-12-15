@@ -37,7 +37,7 @@ public class ConfigurationFragment extends Fragment {
 
     // 表单控件
     private Spinner spDevice;
-    private EditText etName, etArea,etStatus, etAlgo, etIp, etPort, etUser, etPass, etAlarm, etRtsp;
+    private EditText etName, etArea,etIp,etAlarm, etRtsp;
     private final String[] deviceOptions = {"煤量相机", "异物相机", "三超相机"};
     private Button btnAdd, btnModify, btnDelete;
 
@@ -83,8 +83,6 @@ public class ConfigurationFragment extends Fragment {
         // 绑定表单
         etName = view.findViewById(R.id.et_device_name);
         etArea = view.findViewById(R.id.et_area);
-        etStatus = view.findViewById(R.id.et_status);
-        etAlgo = view.findViewById(R.id.et_algo_server);
         spDevice = view.findViewById(R.id.sp_device_type);
         // 创建适配器
         android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
@@ -95,12 +93,8 @@ public class ConfigurationFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spDevice.setAdapter(adapter);
         etIp = view.findViewById(R.id.et_ip_address);
-        etPort = view.findViewById(R.id.et_port);
-        etUser = view.findViewById(R.id.et_username);
-        etPass = view.findViewById(R.id.et_password);
         etAlarm = view.findViewById(R.id.et_alarm_type);
         etRtsp = view.findViewById(R.id.et_rtsp);
-
         btnAdd = view.findViewById(R.id.btn_add);
         btnModify = view.findViewById(R.id.btn_modify);
         btnDelete = view.findViewById(R.id.btn_delete);
@@ -124,8 +118,6 @@ public class ConfigurationFragment extends Fragment {
         // 2. 填充数据
         etName.setText(item.getDeviceName());
         etArea.setText(item.getArea());
-        etStatus.setText(item.getStatus());
-        etAlgo.setText(item.getAlgoServer());
         // 4. 设置 Spinner 选中项
         String currentDevice = item.getDeviceType();
         if (currentDevice != null) {
@@ -137,9 +129,6 @@ public class ConfigurationFragment extends Fragment {
             }
         }
         etIp.setText(item.getIpAddress());
-        etPort.setText(item.getPort());
-        etUser.setText(item.getUsername());
-        etPass.setText(item.getPassword());
         etAlarm.setText(item.getAlarmType());
         etRtsp.setText(item.getRtspUrl());
     }
@@ -147,17 +136,11 @@ public class ConfigurationFragment extends Fragment {
         // 从表单获取数据并创建一个新的 DeviceItem 对象
         String name = etName.getText().toString();
         String area = etArea.getText().toString();
-        String status = etStatus.getText().toString();
-        String algo = etAlgo.getText().toString();
         String deviceType = spDevice.getSelectedItem().toString();
         String ip = etIp.getText().toString();
-        String port = etPort.getText().toString();
-        String user = etUser.getText().toString();
-        String pass = etPass.getText().toString();
         String alarm = etAlarm.getText().toString();
         String rtsp = etRtsp.getText().toString();
-
-        return new DeviceItem(name, area, status,ip, alarm, deviceType, algo, port, user, pass, rtsp);
+        return new DeviceItem(name, area,ip, alarm, deviceType, rtsp);
     }
 
     private void setupButtons() {
@@ -220,13 +203,8 @@ public class ConfigurationFragment extends Fragment {
     private void clearForm() {
         etName.setText("");
         etArea.setText("");
-        etStatus.setText("");
-        etAlgo.setText("");
         spDevice.setSelection(0);
         etIp.setText("");
-        etPort.setText("");
-        etUser.setText("");
-        etPass.setText("");
         etAlarm.setText("");
         etRtsp.setText("");
     }
