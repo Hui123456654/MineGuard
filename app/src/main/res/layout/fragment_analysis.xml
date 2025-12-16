@@ -75,6 +75,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <LinearLayout
+                android:id="@+id/grid_2_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <FrameLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_margin="1dp" android:background="#222">
+                    <SurfaceView android:id="@+id/sv_cam_2_01" android:layout_width="match_parent" android:layout_height="match_parent" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="4dp" android:text="CAM 01" android:textColor="#FFF" android:textSize="14sp" android:background="#80000000"/>
+                </FrameLayout>
+                <FrameLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_margin="1dp" android:background="#222">
+                    <SurfaceView android:id="@+id/sv_cam_2_02" android:layout_width="match_parent" android:layout_height="match_parent" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="4dp" android:text="CAM 02" android:textColor="#FFF" android:textSize="14sp" android:background="#80000000"/>
+                </FrameLayout>
+            </LinearLayout>
+
             <GridLayout
                 android:id="@+id/grid_4_view"
                 android:layout_width="match_parent"
@@ -107,6 +125,7 @@
                 android:visibility="gone"
                 tools:visibility="gone"
                 app:surface_type="texture_view">
+
                 <androidx.media3.ui.PlayerView
                     android:id="@+id/player_view_main"
                     android:layout_width="match_parent"
@@ -218,6 +237,20 @@
         app:layout_constraintTop_toTopOf="@+id/btn_disarm" />
 
     <ImageButton
+        android:id="@+id/btn_grid_2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="二宫格视图"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/icon_two_grid"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_grid_4"
+        app:layout_constraintEnd_toStartOf="@+id/btn_grid_4"
+        app:layout_constraintTop_toTopOf="@+id/btn_grid_4" />
+
+    <ImageButton
         android:id="@+id/btn_grid_1"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -227,8 +260,8 @@
         android:padding="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/icon_single_grid"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_grid_4"
-        app:layout_constraintEnd_toStartOf="@+id/btn_grid_4"
-        app:layout_constraintTop_toTopOf="@+id/btn_grid_4" />
+        app:layout_constraintBottom_toBottomOf="@+id/btn_grid_2"
+        app:layout_constraintEnd_toStartOf="@+id/btn_grid_2"
+        app:layout_constraintTop_toTopOf="@+id/btn_grid_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

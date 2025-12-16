@@ -33,15 +33,20 @@ import java.util.List;
 public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmReceivedListener {
 
     private View grid1View;
+    private View grid2View;
     private View grid4View;
 
     // 单路播放器
     private PlayerView playerView;
     private ExoPlayer player;
 
+    // 【新增】二路播放器
+    private SurfaceView[] grid2SurfaceViews = new SurfaceView[2];
+    private ExoPlayer[] grid2Players = new ExoPlayer[2];
+    
     // 四路播放器
-    private SurfaceView[] gridSurfaceViews = new SurfaceView[4];
-    private ExoPlayer[] gridPlayers = new ExoPlayer[4];
+    private SurfaceView[] grid4SurfaceViews = new SurfaceView[4];
+    private ExoPlayer[] grid4Players = new ExoPlayer[4];
 
     private DeviceViewModel deviceViewModel;
     private SimpleDeviceAdapter deviceAdapter;
@@ -66,12 +71,17 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
 
         // 初始化视图
         playerView = view.findViewById(R.id.player_view_main);
-        gridSurfaceViews[0] = view.findViewById(R.id.sv_cam_01);
-        gridSurfaceViews[1] = view.findViewById(R.id.sv_cam_02);
-        gridSurfaceViews[2] = view.findViewById(R.id.sv_cam_03);
-        gridSurfaceViews[3] = view.findViewById(R.id.sv_cam_04);
+        // 【新增】二路视图 SurfaceViews
+        grid2SurfaceViews[0] = view.findViewById(R.id.sv_cam_2_01);
+        grid2SurfaceViews[1] = view.findViewById(R.id.sv_cam_2_02);
+
+        grid4SurfaceViews[0] = view.findViewById(R.id.sv_cam_01);
+        grid4SurfaceViews[1] = view.findViewById(R.id.sv_cam_02);
+        grid4SurfaceViews[2] = view.findViewById(R.id.sv_cam_03);
+        grid4SurfaceViews[3] = view.findViewById(R.id.sv_cam_04);
 
         grid1View = view.findViewById(R.id.grid_1_view);
+        grid2View = view.findViewById(R.id.grid_2_view);
         grid4View = view.findViewById(R.id.grid_4_view);
 
         // 初始化设备列表
@@ -108,14 +118,29 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
 
     // === 核心修改 3：统一刷新逻辑 ===
     private void refreshCurrentVideoMode() {
+//        if (grid1View.getVisibility() == View.VISIBLE) {
+//            // 如果当前是单路模式，播放第一个设备
+//            stopGrid4Players(); // 确保四路停止
+//            initializePlayer(); // 重新加载单路
+//        } else {
+//            // 如果当前是四路模式，播放前四个设备
+//            releasePlayer(); // 确保单路停止
+//            initGridPlayers(); // 重新加载四路
+//        }
+        // 释放所有播放器资源
+        releasePlayer(); // 确保单路停止
+        stopGrid2Players(); // 确保二路停止
+        stopGrid4Players(); // 确保四路停止
+
         if (grid1View.getVisibility() == View.VISIBLE) {
-            // 如果当前是单路模式，播放第一个设备
-            stopGridPlayers(); // 确保四路停止
-            initializePlayer(); // 重新加载单路
-        } else {
-            // 如果当前是四路模式，播放前四个设备
-            releasePlayer(); // 确保单路停止
-            initGridPlayers(); // 重新加载四路
+            // 单路模式
+            initializePlayer();
+        } else if (grid2View.getVisibility() == View.VISIBLE) {
+            // 【新增】二路模式
+            initGrid2Players();
+        } else { // grid4View.getVisibility() == View.VISIBLE
+            // 四路模式
+            initGrid4Players();
         }
     }
 
@@ -140,7 +165,8 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         }
         // 页面不可见时，释放所有播放器资源
         releasePlayer();
-        stopGridPlayers();
+        stopGrid2Players();
+        stopGrid4Players();
     }
 
     private void loadDataFromActivity(MainActivity mainActivity) {
@@ -178,6 +204,7 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
 
     private void setupClickListeners(View view) {
         ImageButton btnGrid1 = view.findViewById(R.id.btn_grid_1);
+        ImageButton btnGrid2 = view.findViewById(R.id.btn_grid_2);
         ImageButton btnGrid4 = view.findViewById(R.id.btn_grid_4);
         Button btnDisarm = view.findViewById(R.id.btn_disarm);
         Button btnClose = view.findViewById(R.id.btn_close);
@@ -185,13 +212,23 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
 
         btnGrid1.setOnClickListener(v -> {
             grid1View.setVisibility(View.VISIBLE);
+            grid2View.setVisibility(View.GONE);
             grid4View.setVisibility(View.GONE);
             refreshCurrentVideoMode(); // 切换模式时刷新
             Toast.makeText(getContext(), "切换至单路视频", Toast.LENGTH_SHORT).show();
         });
 
+        btnGrid2.setOnClickListener(v -> {
+            grid1View.setVisibility(View.GONE);
+            grid2View.setVisibility(View.VISIBLE);
+            grid4View.setVisibility(View.GONE);
+            refreshCurrentVideoMode();
+            Toast.makeText(getContext(), "切换至二路视频", Toast.LENGTH_SHORT).show();
+        });
+
         btnGrid4.setOnClickListener(v -> {
             grid1View.setVisibility(View.GONE);
+            grid2View.setVisibility(View.GONE);
             grid4View.setVisibility(View.VISIBLE);
             refreshCurrentVideoMode(); // 切换模式时刷新
             Toast.makeText(getContext(), "切换至四路视频", Toast.LENGTH_SHORT).show();
@@ -227,17 +264,17 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         player.prepare();
         player.play();
     }
-
-    // === 核心修改 5：四路播放逻辑 (读取 List 前四个) ===
-    private void initGridPlayers() {
+    // === 核心修改5：新增二路播放逻辑 (读取 List 前两个) ===
+    private void initGrid2Players() {
         if (currentDeviceList == null) return;
 
-        for (int i = 0; i < 4; i++) {
-            // 如果当前索引超过了设备总数（例如只有 2 个设备，i=2 时就越界了），则停止该窗口
+        // 只需要遍历 2 个窗口
+        for (int i = 0; i < 2; i++) {
+            // 如果当前索引超过了设备总数，则停止该窗口
             if (i >= currentDeviceList.size()) {
-                if (gridPlayers[i] != null) {
-                    gridPlayers[i].stop();
-                    gridPlayers[i].clearMediaItems();
+                if (grid2Players[i] != null) {
+                    grid2Players[i].stop();
+                    grid2Players[i].clearMediaItems();
                 }
                 continue;
             }
@@ -246,11 +283,12 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             String url = currentDeviceList.get(i).getRtspUrl();
             if (url == null || url.isEmpty()) continue;
 
-            if (gridPlayers[i] == null) {
+            if (grid2Players[i] == null) {
                 ExoPlayer.Builder builder = new ExoPlayer.Builder(requireContext());
-                gridPlayers[i] = builder.build();
-                gridPlayers[i].setVideoSurfaceView(gridSurfaceViews[i]);
-                gridPlayers[i].setVolume(0f);
+                grid2Players[i] = builder.build();
+                // 绑定到二路专用的 SurfaceView
+                grid2Players[i].setVideoSurfaceView(grid2SurfaceViews[i]);
+                grid2Players[i].setVolume(0f);
             }
 
             // 设置播放源
@@ -258,18 +296,67 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             MediaSource mediaSource = new RtspMediaSource.Factory()
                     .setForceUseRtpTcp(true)
                     .createMediaSource(mediaItem);
-            gridPlayers[i].setMediaSource(mediaSource);
-            gridPlayers[i].prepare();
-            gridPlayers[i].play();
+            grid2Players[i].setMediaSource(mediaSource);
+            grid2Players[i].prepare();
+            grid2Players[i].play();
         }
     }
 
-    private void stopGridPlayers() {
+    // ==新增二路停止逻辑 ===
+    private void stopGrid2Players() {
+        for (int i = 0; i < 2; i++) {
+            if (grid2Players[i] != null) {
+                grid2Players[i].stop();
+                grid2Players[i].release();
+                grid2Players[i] = null;
+            }
+        }
+    }
+
+    // ... (initializePlayer 和 initGridPlayers 保持不变)
+
+    // === 核心修改 6：四路播放逻辑 (读取 List 前四个) ===
+    private void initGrid4Players() {
+        if (currentDeviceList == null) return;
+
         for (int i = 0; i < 4; i++) {
-            if (gridPlayers[i] != null) {
-                gridPlayers[i].stop();
-                gridPlayers[i].release();
-                gridPlayers[i] = null;
+            // 如果当前索引超过了设备总数（例如只有 2 个设备，i=2 时就越界了），则停止该窗口
+            if (i >= currentDeviceList.size()) {
+                if (grid4Players[i] != null) {
+                    grid4Players[i].stop();
+                    grid4Players[i].clearMediaItems();
+                }
+                continue;
+            }
+
+            // 获取对应索引的设备 URL
+            String url = currentDeviceList.get(i).getRtspUrl();
+            if (url == null || url.isEmpty()) continue;
+
+            if (grid4Players[i] == null) {
+                ExoPlayer.Builder builder = new ExoPlayer.Builder(requireContext());
+                grid4Players[i] = builder.build();
+                grid4Players[i].setVideoSurfaceView(grid4SurfaceViews[i]);
+                grid4Players[i].setVolume(0f);
+            }
+
+            // 设置播放源
+            MediaItem mediaItem = MediaItem.fromUri(url);
+            MediaSource mediaSource = new RtspMediaSource.Factory()
+                    .setForceUseRtpTcp(true)
+                    .createMediaSource(mediaItem);
+            grid4Players[i].setMediaSource(mediaSource);
+            grid4Players[i].prepare();
+            grid4Players[i].play();
+        }
+    }
+
+    private void stopGrid4Players() {
+        for (int i = 0; i < 4; i++) {
+            if (grid4Players[i] != null) {
+                grid4Players[i].stop();
+                grid4Players[i].release();
+                grid4Players[i] = null;
             }
         }
     }
