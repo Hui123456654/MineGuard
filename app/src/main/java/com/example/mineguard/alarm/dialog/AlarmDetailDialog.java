@@ -10,21 +10,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider; // 1. 导入 ViewModel 相关
 import com.example.mineguard.R;
 import com.example.mineguard.alarm.model.AlarmItem;
+import com.example.mineguard.data.DeviceItem; // 2. 导入数据模型
+import com.example.mineguard.data.DeviceViewModel; // 3. 导入 ViewModel
 import com.bumptech.glide.Glide;
 import java.io.File;
+import java.util.List;
 
 /**
  * 报警详情弹窗
+ * 修改记录：已关联系统配置中的设备列表，根据 IP 动态显示名称和区域
  */
 public class AlarmDetailDialog extends DialogFragment {
 
     private ImageView imageView;
-    // 定义控件变量
-    private TextView tvAlarmID, tvTime, tvAlgorithmID,  tvArea,tvType,tvIP;
+    private TextView tvAlarmID, tvTime, tvAlgorithmID, tvArea, tvType, tvIP;
     private Button btnClose;
     private AlarmItem alarm;
+
+    // 增加 ViewModel 成员变量
+    private DeviceViewModel deviceViewModel;
 
     public static AlarmDetailDialog newInstance(AlarmItem alarm) {
         AlarmDetailDialog dialog = new AlarmDetailDialog();
@@ -41,6 +48,9 @@ public class AlarmDetailDialog extends DialogFragment {
             alarm = (AlarmItem) getArguments().getSerializable("alarm");
         }
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogTheme);
+
+        // 4. 初始化 ViewModel (使用 requireActivity() 以便与配置页共享数据)
+        deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
     }
 
     @Nullable
@@ -48,25 +58,13 @@ public class AlarmDetailDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_alarm_detail, container, false);
 
-        // 1. 绑定控件
         imageView = view.findViewById(R.id.imageView);
-
-        // 对应 XML 里的 "报警ID:"
         tvAlarmID = view.findViewById(R.id.tvAlarmID);
-        //对应 报警类型
         tvType = view.findViewById(R.id.tvType);
-        // 对应 XML 里的 "设备IP地址" (实际将显示时间)
         tvTime = view.findViewById(R.id.tvTime);
-
-        // 对应 XML 里的 "算法编码:"
         tvAlgorithmID = view.findViewById(R.id.tvAlgorithmID);
-
-        // 对应 XML 里的 "关联摄像头:"
-        tvIP = view.findViewById(R.id.tvIP);
-
-        // 对应 XML 里的 "位置信息:"
+        tvIP = view.findViewById(R.id.tvIP);   // 界面上显示的标签是“关联摄像头”，对应变量名 tvIP
         tvArea = view.findViewById(R.id.tvArea);
-
         btnClose = view.findViewById(R.id.btnClose);
 
         setupData();
@@ -78,37 +76,43 @@ public class AlarmDetailDialog extends DialogFragment {
     private void setupData() {
         if (alarm == null) return;
 
-        // ✅ 正确写法：使用 String.valueOf() 将数字转为字符串
         tvAlarmID.setText(alarm.getId() != 0 ? String.valueOf(alarm.getId()) : "未知目标");
         tvType.setText(alarm.getType() != null ? alarm.getType() : "未知类型");
-
         tvAlgorithmID.setText(alarm.getAlgorithm_code() != null ? alarm.getAlgorithm_code() : "通用算法");
-        tvIP.setText(alarm.getIp() != null ? alarm.getIp() : "未知IP");
         tvTime.setText(alarm.getSolve_time() != null ? alarm.getSolve_time() : "未知时间");
 
-        String extendInfo = alarm.getIp();
+        // === 修改核心逻辑：根据 IP 从设备列表中查找信息 ===
+        String alarmIp = alarm.getIp(); // 获取报警数据中的 IP (或 extend 字段)
+        boolean isMatched = false;
 
+        // 获取当前的设备列表数据
+        List<DeviceItem> deviceList = deviceViewModel.getLiveDeviceList().getValue();
 
-        if (extendInfo != null) {
-            if (extendInfo.contains("CAM_01")) {
-                tvIP.setText("摄像头 1");
-                tvArea.setText("东区 (挖掘面)");
-            } else if (extendInfo.contains("CAM_02")) {
-                tvIP.setText("摄像头 2");
-                tvArea.setText("西区 (传送带)");
-            } else if (extendInfo.contains("MobileApp")) {
-                tvIP.setText("手机测试");
-                tvArea.setText("调试区域");
-            } else {
-                tvIP.setText(extendInfo); // 直接显示扩展信息
-                tvArea.setText("未知区域");
+        if (alarmIp != null && deviceList != null) {
+            for (DeviceItem device : deviceList) {
+                // 忽略大小写和空格进行比对
+                if (device.getIpAddress() != null &&
+                        device.getIpAddress().trim().equalsIgnoreCase(alarmIp.trim())) {
+
+                    // 1. 关联摄像头 -> 显示系统配置里的“设备名称”
+                    tvIP.setText(device.getDeviceName());
+
+                    // 2. 位置信息 -> 显示系统配置里的“所属区域”
+                    tvArea.setText(device.getArea());
+
+                    isMatched = true;
+                    break; // 找到后退出循环
+                }
             }
-        } else {
-            tvIP.setText("未知摄像头");
+        }
+
+        // 如果在配置列表中没找到匹配的 IP，显示默认信息或原始 IP
+        if (!isMatched) {
+            tvIP.setText(alarmIp != null ? alarmIp : "未知摄像头");
             tvArea.setText("未知区域");
         }
 
-        // === 5. 图片加载 ===
+        // === 图片加载保持不变 ===
         String path = alarm.getPath();
         if (path != null && !path.isEmpty()) {
             Object imageSource;
