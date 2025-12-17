@@ -126,6 +126,7 @@
                     android:textColor="#212121" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -223,111 +224,14 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <Button
+            android:id="@+id/btnClose"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#F5F5F5"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="处理信息"
-                android:textSize="16sp"
-                android:textColor="#212121"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:id="@+id/tvProcessInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="已处理完成，设备运行正常"
-                android:textSize="14sp"
-                android:textColor="#424242"
-                android:background="@android:color/white"
-                android:padding="8dp"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/etProcessInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="请输入处理信息..."
-                android:textSize="14sp"
-                android:textColor="#212121"
-                android:textColorHint="#9E9E9E"
-                android:background="@android:color/white"
-                android:padding="8dp"
-                android:minHeight="80dp"
-                android:gravity="top"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tvProcessor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="处理人: 张三"
-                android:textSize="14sp"
-                android:textColor="#424242"
-                android:layout_marginTop="8dp"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tvProcessTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="处理时间: 2024-10-17 16:00:00"
-                android:textSize="14sp"
-                android:textColor="#424242"
-                android:layout_marginTop="4dp"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/btnSave"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:text="保存处理信息"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/bg_button_primary" />
-
-            <Button
-                android:id="@+id/btnExport"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_button_secondary"
-                android:text="导出图片"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/btnClose"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="关闭"
-                android:textSize="14sp"
-                android:textColor="#757575"
-                android:background="@drawable/bg_button_outline" />
-
-        </LinearLayout>
+            android:layout_height="45dp"
+            android:text="关闭"
+            android:textSize="16sp"
+            android:textColor="#757575"
+            android:background="@drawable/bg_button_outline" />
 
     </LinearLayout>
 

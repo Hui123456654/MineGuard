@@ -13,7 +13,10 @@ import com.example.mineguard.R;
 import com.example.mineguard.alarm.model.AlarmItem;
 import com.example.mineguard.data.DeviceItem; // 1. 引入设备数据模型
 
-import android.widget.PopupMenu;
+// 新增 Glide 和 File 的导入
+import com.bumptech.glide.Glide;
+import java.io.File;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -24,12 +27,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 
 /**
- * 报警列表适配器 - 已修改：支持根据 IP 匹配系统配置中的名称和区域
+ * 报警列表适配器 - 已修改：支持显示报警抓拍图片
  */
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder> {
 
     private List<AlarmItem> alarmList;
-    private List<DeviceItem> deviceList; // 2. 新增：保存系统配置的设备列表
+    private List<DeviceItem> deviceList; // 保存系统配置的设备列表
     private OnAlarmClickListener listener;
     private SimpleDateFormat dateFormat;
 
@@ -45,7 +48,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         this.dateFormat = new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault());
     }
 
-    // 3. 新增方法：外部 Fragment 调用此方法传入最新的设备列表
+    // 外部 Fragment 调用此方法传入最新的设备列表
     public void setDeviceList(List<DeviceItem> list) {
         this.deviceList = list;
         notifyDataSetChanged(); // 数据更新后刷新列表显示
@@ -96,7 +99,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             String title = type + " #" + alarm.getId();
             tvTitle.setText(title);
 
-            // --- 2. 核心修改：匹配设备名称和区域 ---
+            // --- 2. 匹配设备名称和区域 ---
             String showName = "";
             String showArea = "";
             String ip = alarm.getIp(); // 获取报警信息的 IP
@@ -117,10 +120,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
 
             // 根据匹配结果设置文本
             if (isMatched) {
-                // 匹配成功：显示 "区域 | 设备名"
                 tvScene.setText(showArea + " | " + showName);
             } else {
-                // 匹配失败：保持原有逻辑 (显示 位置 | IP)
                 String location = alarm.getLocation() != null ? alarm.getLocation() : "未知位置";
                 if (ip != null && !ip.isEmpty()) {
                     tvScene.setText(location + " | " + ip);
@@ -137,8 +138,28 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                 tvTime.setText("待处理");
             }
 
-            // --- 4. 图片 (暂用默认图) ---
-            imageView.setImageResource(R.drawable.ic_alarm_empty);
+            // --- 4. 图片加载 (核心修改) ---
+            String path = alarm.getPath();
+            if (path != null && !path.isEmpty()) {
+                Object imageSource;
+                // 判断是绝对路径还是其他类型的路径（如 URI）
+                if (path.startsWith("/")) {
+                    imageSource = new File(path);
+                } else {
+                    imageSource = path;
+                }
+
+                // 使用 Glide 加载图片
+                Glide.with(context)
+                        .load(imageSource)
+                        .placeholder(R.drawable.ic_alarm_empty) // 加载中显示的占位图
+                        .error(R.drawable.ic_alarm_empty)       // 加载失败显示的错误图
+                        .centerCrop()                           // 裁剪图片以填充 ImageView
+                        .into(imageView);
+            } else {
+                // 如果没有图片路径，显示默认图标
+                imageView.setImageResource(R.drawable.ic_alarm_empty);
+            }
 
             // --- 5. 样式与事件 ---
             setupStyle(alarm);
@@ -167,7 +188,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
                     tvStatusBadge.setOnClickListener(null);
                     break;
                 case 2:
-                    tvStatusBadge.setText(" 误报 ");
+                    tvStatusBadge.setText("误报");
                     setStatusBadgeStyle(0xFFFF9800); // 橙
                     tvStatusBadge.setOnClickListener(null);
                     break;
