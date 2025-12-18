@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String CHANNEL_ID = "alarm_channel";
 
     private AlarmRepository alarmRepository;
-
+    private BottomNavigationView bottomNav;
     // 接口：用于通知 Fragment 数据更新
     public interface OnAlarmReceivedListener {
         void onNewAlarm(AlarmItem item);
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         DeviceRepository.init(getApplicationContext());
 
         setContentView(R.layout.activity_main);
-
+        bottomNav = findViewById(R.id.bottom_navigation);
         windowInsetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         alarmRepository = new AlarmRepository(getApplication());
 
@@ -123,7 +123,11 @@ public class MainActivity extends AppCompatActivity {
         }
         transaction.commit();
     }
-
+    public void setBottomNavigationVisibility(int visibility) {
+        if (bottomNav != null) {
+            bottomNav.setVisibility(visibility);
+        }
+    }
     // ================== 核心修改：统一的配置逻辑 ==================
 
     /**

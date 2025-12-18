@@ -456,6 +456,9 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         androidx.constraintlayout.widget.ConstraintLayout.LayoutParams rightParams =
                 (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) guidelineRight.getLayoutParams();
 
+        // 【关键】：获取 Activity 引用以操作底部菜单
+        MainActivity mainActivity = (MainActivity) getActivity();
+
         if (isFullScreenMode) {
             // 进入全屏：强制将 Guideline 推向屏幕边缘
             leftParams.guidePercent = 0.0f;
@@ -474,6 +477,11 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             getView().findViewById(R.id.btn_grid_1).setVisibility(View.GONE);
             getView().findViewById(R.id.btn_grid_2).setVisibility(View.GONE);
             getView().findViewById(R.id.btn_grid_4).setVisibility(View.GONE);
+
+            // 【新增】：通知 Activity 隐藏底部菜单栏
+            if (mainActivity != null) {
+                mainActivity.setBottomNavigationVisibility(View.GONE);
+            }
 
             // 切换图标
             btnFullscreenToggle.setImageResource(R.drawable.ic_collapse);
@@ -495,6 +503,11 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             getView().findViewById(R.id.btn_grid_1).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.btn_grid_2).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.btn_grid_4).setVisibility(View.VISIBLE);
+
+            // 【新增】：通知 Activity 显示底部菜单栏
+            if (mainActivity != null) {
+                mainActivity.setBottomNavigationVisibility(View.VISIBLE);
+            }
 
             // 切换图标
             btnFullscreenToggle.setImageResource(R.drawable.ic_full_screen);
