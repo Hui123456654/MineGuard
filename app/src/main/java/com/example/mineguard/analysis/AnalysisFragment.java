@@ -2,7 +2,7 @@ package com.example.mineguard.analysis;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,11 +41,11 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
     private ExoPlayer player;
 
     // 【新增】二路播放器
-    private SurfaceView[] grid2SurfaceViews = new SurfaceView[2];
+    private TextureView[] grid2TextureViews = new TextureView[2];
     private ExoPlayer[] grid2Players = new ExoPlayer[2];
-    
+
     // 四路播放器
-    private SurfaceView[] grid4SurfaceViews = new SurfaceView[4];
+    private TextureView[] grid4TextureViews = new TextureView[4];
     private ExoPlayer[] grid4Players = new ExoPlayer[4];
 
     private DeviceViewModel deviceViewModel;
@@ -59,6 +59,15 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
     private List<AlarmItem> displayAlarmList = new ArrayList<>();
     // 【新增】提示文字 TextView
     private TextView tvNoAlarmData;
+
+    private boolean isLeftExpanded = true;
+    private boolean isRightExpanded = true;
+    private androidx.constraintlayout.widget.Guideline guidelineLeft;
+    private androidx.constraintlayout.widget.Guideline guidelineRight;
+    private View groupLeftPanel;
+    private View groupRightPanel;
+    private ImageButton btnToggleLeft, btnToggleRight;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,16 +78,35 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        guidelineLeft = view.findViewById(R.id.guideline_left);
+        guidelineRight = view.findViewById(R.id.guideline_right);
+        groupLeftPanel = view.findViewById(R.id.group_left_panel);
+        groupRightPanel = view.findViewById(R.id.group_right_panel);
+        btnToggleLeft = view.findViewById(R.id.btn_toggle_left);
+        btnToggleRight = view.findViewById(R.id.btn_toggle_right);
+
+        // 左侧切换逻辑
+        btnToggleLeft.setOnClickListener(v -> {
+            isLeftExpanded = !isLeftExpanded;
+            toggleLeftSide();
+        });
+
+        // 右侧切换逻辑
+        btnToggleRight.setOnClickListener(v -> {
+            isRightExpanded = !isRightExpanded;
+            toggleRightSide();
+        });
+
         // 初始化视图
         playerView = view.findViewById(R.id.player_view_main);
-        // 【新增】二路视图 SurfaceViews
-        grid2SurfaceViews[0] = view.findViewById(R.id.sv_cam_2_01);
-        grid2SurfaceViews[1] = view.findViewById(R.id.sv_cam_2_02);
-
-        grid4SurfaceViews[0] = view.findViewById(R.id.sv_cam_01);
-        grid4SurfaceViews[1] = view.findViewById(R.id.sv_cam_02);
-        grid4SurfaceViews[2] = view.findViewById(R.id.sv_cam_03);
-        grid4SurfaceViews[3] = view.findViewById(R.id.sv_cam_04);
+        // 二路
+        grid2TextureViews[0] = view.findViewById(R.id.tv_cam_2_01);
+        grid2TextureViews[1] = view.findViewById(R.id.tv_cam_2_02);
+        // 四路
+        grid4TextureViews[0] = view.findViewById(R.id.tv_cam_01);
+        grid4TextureViews[1] = view.findViewById(R.id.tv_cam_02);
+        grid4TextureViews[2] = view.findViewById(R.id.tv_cam_03);
+        grid4TextureViews[3] = view.findViewById(R.id.tv_cam_04);
 
         grid1View = view.findViewById(R.id.grid_1_view);
         grid2View = view.findViewById(R.id.grid_2_view);
@@ -116,17 +144,60 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         setupClickListeners(view);
     }
 
+    private void toggleLeftSide() {
+        // 开启布局动画
+        androidx.transition.TransitionManager.beginDelayedTransition((ViewGroup) getView());
+
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) guidelineLeft.getLayoutParams();
+
+        if (isLeftExpanded) {
+            params.guidePercent = 0.18f;
+            groupLeftPanel.setVisibility(View.VISIBLE);
+            btnToggleLeft.setImageResource(R.drawable.icon_left); // 指向左，表示可以收起
+        } else {
+            params.guidePercent = 0.0f;
+            groupLeftPanel.setVisibility(View.GONE);
+            btnToggleLeft.setImageResource(R.drawable.icon_right); // 指向右，表示可以展开
+        }
+        guidelineLeft.setLayoutParams(params);
+        // ======= 核心优化添加处 =======
+        // 这里的 video_container 是你在 xml 中定义的 FrameLayout ID
+        guidelineLeft.postDelayed(() -> {
+            View videoContainer = getView().findViewById(R.id.video_container);
+            if (videoContainer != null) {
+                videoContainer.requestLayout();
+            }
+        }, 350); // 稍微多给 50ms 确保 Transition 动画彻底完成
+    }
+
+    private void toggleRightSide() {
+        androidx.transition.TransitionManager.beginDelayedTransition((ViewGroup) getView());
+
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) guidelineRight.getLayoutParams();
+
+        if (isRightExpanded) {
+            params.guidePercent = 0.82f;
+            groupRightPanel.setVisibility(View.VISIBLE);
+            btnToggleRight.setImageResource(R.drawable.icon_right); // 指向右，表示可以收起
+        } else {
+            params.guidePercent = 1.0f;
+            groupRightPanel.setVisibility(View.GONE);
+            btnToggleRight.setImageResource(R.drawable.icon_left); // 指向左，表示可以展开
+        }
+        guidelineRight.setLayoutParams(params);
+        // ======= 核心优化添加处 =======
+        guidelineRight.postDelayed(() -> {
+            View videoContainer = getView().findViewById(R.id.video_container);
+            if (videoContainer != null) {
+                videoContainer.requestLayout();
+            }
+        }, 350);
+    }
+
     // === 核心修改 3：统一刷新逻辑 ===
     private void refreshCurrentVideoMode() {
-//        if (grid1View.getVisibility() == View.VISIBLE) {
-//            // 如果当前是单路模式，播放第一个设备
-//            stopGrid4Players(); // 确保四路停止
-//            initializePlayer(); // 重新加载单路
-//        } else {
-//            // 如果当前是四路模式，播放前四个设备
-//            releasePlayer(); // 确保单路停止
-//            initGridPlayers(); // 重新加载四路
-//        }
         // 释放所有播放器资源
         releasePlayer(); // 确保单路停止
         stopGrid2Players(); // 确保二路停止
@@ -287,7 +358,8 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
                 ExoPlayer.Builder builder = new ExoPlayer.Builder(requireContext());
                 grid2Players[i] = builder.build();
                 // 绑定到二路专用的 SurfaceView
-                grid2Players[i].setVideoSurfaceView(grid2SurfaceViews[i]);
+                //grid2Players[i].setVideoSurfaceView(grid2SurfaceViews[i]);
+                grid2Players[i].setVideoTextureView(grid2TextureViews[i]);
                 grid2Players[i].setVolume(0f);
             }
 
@@ -313,8 +385,6 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         }
     }
 
-    // ... (initializePlayer 和 initGridPlayers 保持不变)
-
     // === 核心修改 6：四路播放逻辑 (读取 List 前四个) ===
     private void initGrid4Players() {
         if (currentDeviceList == null) return;
@@ -336,7 +406,8 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             if (grid4Players[i] == null) {
                 ExoPlayer.Builder builder = new ExoPlayer.Builder(requireContext());
                 grid4Players[i] = builder.build();
-                grid4Players[i].setVideoSurfaceView(grid4SurfaceViews[i]);
+                //grid4Players[i].setVideoSurfaceView(grid4SurfaceViews[i]);
+                grid4Players[i].setVideoTextureView(grid4TextureViews[i]);
                 grid4Players[i].setVolume(0f);
             }
 
