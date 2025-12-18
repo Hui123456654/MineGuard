@@ -20,6 +20,40 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.82" />
 
+    <ImageButton
+        android:id="@+id/btn_toggle_left"
+        android:layout_width="24dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_toggle_button"
+        android:src="@drawable/icon_left"
+        android:elevation="6dp"
+        app:layout_constraintTop_toTopOf="@+id/card_center_video"
+        app:layout_constraintBottom_toBottomOf="@+id/card_center_video"
+        app:layout_constraintStart_toStartOf="@+id/card_center_video" />
+
+    <ImageButton
+        android:id="@+id/btn_toggle_right"
+        android:layout_width="24dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_toggle_button"
+        android:src="@drawable/icon_right"
+        android:elevation="6dp"
+        app:layout_constraintTop_toTopOf="@+id/card_center_video"
+        app:layout_constraintBottom_toBottomOf="@+id/card_center_video"
+        app:layout_constraintEnd_toEndOf="@+id/card_center_video" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_left_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="card_left_data" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_right_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="card_right_alarm" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/card_left_data"
         android:layout_width="0dp"
@@ -73,7 +107,20 @@
         <FrameLayout
             android:id="@+id/video_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#000000">
+
+            <ImageButton
+                android:id="@+id/btn_fullscreen_toggle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="12dp"
+                android:background="#4D000000"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_full_screen"
+                android:elevation="8dp" />
 
             <LinearLayout
                 android:id="@+id/grid_2_view"
@@ -84,11 +131,11 @@
                 tools:visibility="visible">
 
                 <FrameLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_margin="1dp" android:background="#222">
-                    <SurfaceView android:id="@+id/sv_cam_2_01" android:layout_width="match_parent" android:layout_height="match_parent" />
+                    <TextureView android:id="@+id/tv_cam_2_01" android:layout_width="match_parent" android:layout_height="match_parent" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="4dp" android:text="CAM 01" android:textColor="#FFF" android:textSize="14sp" android:background="#80000000"/>
                 </FrameLayout>
                 <FrameLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_margin="1dp" android:background="#222">
-                    <SurfaceView android:id="@+id/sv_cam_2_02" android:layout_width="match_parent" android:layout_height="match_parent" />
+                    <TextureView android:id="@+id/tv_cam_2_02" android:layout_width="match_parent" android:layout_height="match_parent" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="4dp" android:text="CAM 02" android:textColor="#FFF" android:textSize="14sp" android:background="#80000000"/>
                 </FrameLayout>
             </LinearLayout>
@@ -101,19 +148,19 @@
                 android:rowCount="2">
 
                 <FrameLayout android:layout_width="0dp" android:layout_height="0dp" android:layout_rowWeight="1" android:layout_columnWeight="1" android:layout_margin="1dp" android:background="#222">
-                    <SurfaceView android:id="@+id/sv_cam_01" android:layout_width="match_parent" android:layout_height="match_parent" />
+                    <TextureView android:id="@+id/tv_cam_01" android:layout_width="match_parent" android:layout_height="match_parent" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="4dp" android:text="CAM 01" android:textColor="#FFF" android:textSize="12sp" android:background="#80000000"/>
                 </FrameLayout>
                 <FrameLayout android:layout_width="0dp" android:layout_height="0dp" android:layout_rowWeight="1" android:layout_columnWeight="1" android:layout_margin="1dp" android:background="#222">
-                    <SurfaceView android:id="@+id/sv_cam_02" android:layout_width="match_parent" android:layout_height="match_parent" />
+                    <TextureView android:id="@+id/tv_cam_02" android:layout_width="match_parent" android:layout_height="match_parent" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="4dp" android:text="CAM 02" android:textColor="#FFF" android:textSize="12sp" android:background="#80000000"/>
                 </FrameLayout>
                 <FrameLayout android:layout_width="0dp" android:layout_height="0dp" android:layout_rowWeight="1" android:layout_columnWeight="1" android:layout_margin="1dp" android:background="#222">
-                    <SurfaceView android:id="@+id/sv_cam_03" android:layout_width="match_parent" android:layout_height="match_parent" />
+                    <TextureView android:id="@+id/tv_cam_03" android:layout_width="match_parent" android:layout_height="match_parent" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="4dp" android:text="CAM 03" android:textColor="#FFF" android:textSize="12sp" android:background="#80000000"/>
                 </FrameLayout>
                 <FrameLayout android:layout_width="0dp" android:layout_height="0dp" android:layout_rowWeight="1" android:layout_columnWeight="1" android:layout_margin="1dp" android:background="#222">
-                    <SurfaceView android:id="@+id/sv_cam_04" android:layout_width="match_parent" android:layout_height="match_parent" />
+                    <TextureView android:id="@+id/tv_cam_04" android:layout_width="match_parent" android:layout_height="match_parent" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="4dp" android:text="CAM 04" android:textColor="#FFF" android:textSize="12sp" android:background="#80000000"/>
                 </FrameLayout>
             </GridLayout>
@@ -131,7 +178,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:use_controller="false"
-                    app:resize_mode="fit" />
+                    app:resize_mode="fit"
+                    app:surface_type="texture_view"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="top|center_horizontal" android:padding="8dp" android:text="Main Camera (Live)" android:textColor="#FFF" android:textSize="16sp" android:background="#80000000" />
             </FrameLayout>
         </FrameLayout>
