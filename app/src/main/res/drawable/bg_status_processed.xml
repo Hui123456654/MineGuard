@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="#E8F5E9" /> <!-- 浅绿色背景 -->
-    <corners android:radius="12dp" /> <!-- 与未处理状态相同的圆角大小 -->
-    <stroke android:width="1dp" android:color="#66BB6A" /> <!-- 绿色边框 -->
-</shape>
