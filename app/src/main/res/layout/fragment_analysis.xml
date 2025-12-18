@@ -110,6 +110,18 @@
             android:layout_height="match_parent"
             android:background="#000000">
 
+            <ImageButton
+                android:id="@+id/btn_fullscreen_toggle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="12dp"
+                android:background="#4D000000"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_full_screen"
+                android:elevation="8dp" />
+
             <LinearLayout
                 android:id="@+id/grid_2_view"
                 android:layout_width="match_parent"

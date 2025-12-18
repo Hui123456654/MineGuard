@@ -68,6 +68,9 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
     private View groupRightPanel;
     private ImageButton btnToggleLeft, btnToggleRight;
 
+    private boolean isFullScreenMode = false; // 记录当前是否处于全屏状态
+    private ImageButton btnFullscreenToggle;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -280,6 +283,7 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         Button btnDisarm = view.findViewById(R.id.btn_disarm);
         Button btnClose = view.findViewById(R.id.btn_close);
         Button btnIntercom = view.findViewById(R.id.btn_intercom);
+        btnFullscreenToggle = view.findViewById(R.id.btn_fullscreen_toggle);
 
         btnGrid1.setOnClickListener(v -> {
             grid1View.setVisibility(View.VISIBLE);
@@ -308,6 +312,7 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         btnDisarm.setOnClickListener(v -> Toast.makeText(getContext(), "撤防指令已发送", Toast.LENGTH_SHORT).show());
         btnClose.setOnClickListener(v -> Toast.makeText(getContext(), "关闭操作", Toast.LENGTH_SHORT).show());
         btnIntercom.setOnClickListener(v -> Toast.makeText(getContext(), "开启对讲", Toast.LENGTH_SHORT).show());
+        btnFullscreenToggle.setOnClickListener(v -> toggleFullScreen());
     }
 
     // === 核心修改 4：单路播放逻辑 (读取 List 第一个) ===
@@ -438,6 +443,70 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             player = null;
         }
     }
+
+    private void toggleFullScreen() {
+        isFullScreenMode = !isFullScreenMode;
+
+        // 1. 开启过渡动画
+        androidx.transition.TransitionManager.beginDelayedTransition((ViewGroup) getView());
+
+        // 2. 获取布局参数
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams leftParams =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) guidelineLeft.getLayoutParams();
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams rightParams =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) guidelineRight.getLayoutParams();
+
+        if (isFullScreenMode) {
+            // 进入全屏：强制将 Guideline 推向屏幕边缘
+            leftParams.guidePercent = 0.0f;
+            rightParams.guidePercent = 1.0f;
+
+            // 隐藏所有干扰 UI
+            groupLeftPanel.setVisibility(View.GONE);
+            groupRightPanel.setVisibility(View.GONE);
+            btnToggleLeft.setVisibility(View.GONE);
+            btnToggleRight.setVisibility(View.GONE);
+
+            // 隐藏底部操作按钮（根据你的 XML ID 补充）
+            getView().findViewById(R.id.btn_disarm).setVisibility(View.GONE);
+            getView().findViewById(R.id.btn_close).setVisibility(View.GONE);
+            getView().findViewById(R.id.btn_intercom).setVisibility(View.GONE);
+            getView().findViewById(R.id.btn_grid_1).setVisibility(View.GONE);
+            getView().findViewById(R.id.btn_grid_2).setVisibility(View.GONE);
+            getView().findViewById(R.id.btn_grid_4).setVisibility(View.GONE);
+
+            // 切换图标
+            btnFullscreenToggle.setImageResource(R.drawable.ic_collapse);
+        } else {
+            // 退出全屏：根据之前的展开状态恢复
+            leftParams.guidePercent = isLeftExpanded ? 0.18f : 0.0f;
+            rightParams.guidePercent = isRightExpanded ? 0.82f : 1.0f;
+
+            // 恢复 UI 显示（受原有展开变量控制）
+            groupLeftPanel.setVisibility(isLeftExpanded ? View.VISIBLE : View.GONE);
+            groupRightPanel.setVisibility(isRightExpanded ? View.VISIBLE : View.GONE);
+            btnToggleLeft.setVisibility(View.VISIBLE);
+            btnToggleRight.setVisibility(View.VISIBLE);
+
+            // 恢复底部操作按钮
+            getView().findViewById(R.id.btn_disarm).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.btn_close).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.btn_intercom).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.btn_grid_1).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.btn_grid_2).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.btn_grid_4).setVisibility(View.VISIBLE);
+
+            // 切换图标
+            btnFullscreenToggle.setImageResource(R.drawable.ic_full_screen);
+        }
+
+        guidelineLeft.setLayoutParams(leftParams);
+        guidelineRight.setLayoutParams(rightParams);
+
+        // 触发视频容器重新计算布局以撑满空间
+        getView().findViewById(R.id.video_container).requestLayout();
+    }
+
 
     // onStart 和 onStop 通常由 onResume/onPause 覆盖了逻辑，
     // 但为了保险起见，保持简单的 super 调用即可，或者根据需要调用 refresh
