@@ -28,6 +28,7 @@ import java.util.Locale;
 import android.util.DisplayMetrics;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.view.Window;
 
 /**
  * 报警详情弹窗
@@ -244,20 +245,18 @@ public class AlarmDetailDialog extends DialogFragment {
     public void onStart() {
         super.onStart();
         if (getDialog() != null && getDialog().getWindow() != null) {
-            // 1. 获取屏幕的真实尺寸
+            Window window = getDialog().getWindow();
+
+            // 1. 设置尺寸：宽度占屏幕90%，高度占80%
             DisplayMetrics dm = new DisplayMetrics();
             requireActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-            // 2. 动态计算：宽度占屏幕 90%，高度占屏幕 80%
-            // 这样无论是在手机还是平板上，它都会是一个很大的大弹窗
             int width = (int) (dm.widthPixels * 0.9);
             int height = (int) (dm.heightPixels * 0.8);
+            window.setLayout(width, height);
 
-            // 3. 应用尺寸
-            getDialog().getWindow().setLayout(width, height);
-
-            // 4. (可选) 设置背景透明，这样圆角效果才不会有白边
-            getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            // 2. 关键：设置背景透明
+            // 如果不加这一行，你会看到圆角外面还有一个白色的直角方框
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
     }
 }
