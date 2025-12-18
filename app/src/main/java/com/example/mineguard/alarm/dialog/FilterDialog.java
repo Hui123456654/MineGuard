@@ -83,7 +83,7 @@ public class FilterDialog extends BottomSheetDialogFragment {
 
     private void setupSpinners() {
         // 报警类型
-        String[] alarmTypes = {"全部", "人员入侵", "余煤检测", "旋转器检测", "挂钩检测分割版"};
+        String[] alarmTypes = {"全部", "异物", "煤块", "三超"};
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(requireContext(), 
                 android.R.layout.simple_spinner_item, alarmTypes);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -97,7 +97,7 @@ public class FilterDialog extends BottomSheetDialogFragment {
         spinnerAlarmLevel.setAdapter(levelAdapter);
         
         // 处理状态
-        String[] statuses = {"全部", "未处理", "已处理"};
+        String[] statuses = {"全部", "未处理", "已处理","误报"};
         ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(requireContext(), 
                 android.R.layout.simple_spinner_item, statuses);
         statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

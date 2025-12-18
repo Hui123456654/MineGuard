@@ -151,20 +151,23 @@ public class MainActivity extends AppCompatActivity {
      * 根据设备类型获取相机端的上传接口路径
      */
     private String getRemotePathByType(String deviceType) {
-        if (deviceType == null) return "/server/on/alarm/info/upload/";
+        String yw="/server/on/alarm/info/upload/";
+        String sanCao="/server/on/four/limit/alarm/upload/";
+        String ml="/server/on/volum/weight/upload/";
+        if (deviceType == null) return yw;
 
         switch (deviceType) {
             case "异物相机":
             case "异物":
-                return "/server/on/alarm/info/upload/";
+                return yw;
             case "三超相机":
             case "三超":
-                return "/server/on/four/limit/alarm/upload/";
+                return sanCao;
             case "煤量相机":
             case "煤量":
-                return "/server/on/volum/weight/upload/";
+                return ml;
             default:
-                return "/server/on/alarm/info/upload/";
+                return yw;
         }
     }
 

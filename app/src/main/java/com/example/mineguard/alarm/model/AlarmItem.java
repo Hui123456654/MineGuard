@@ -139,7 +139,15 @@ public class AlarmItem implements Serializable {
     }
 
     public String getStatusDescription() {
-        return status == STATUS_PROCESSED ? "已处理" : "未处理";
+        switch (status) {
+            case STATUS_PROCESSED:
+                return "已处理";
+            case STATUS_FALSE_ALARM:
+                return "误报"; // 必须是 "误报"，不能是 " 误报 "
+            case STATUS_UNPROCESSED:
+            default:
+                return "未处理"; // 必须是 "未处理"，不能是 "未处理▼"
+        }
     }
 
     public boolean isFalseAlarm() {
