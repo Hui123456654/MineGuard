@@ -34,7 +34,7 @@ public class ConfigurationFragment extends Fragment {
     // 右侧视图组件
     private TextView tvEmptyHint;
     private View layoutDetailForm;
-
+    private Button btnNavToAdd;
     // 表单控件
     private Spinner spDevice;
     private EditText etName, etArea,etIp,etAlarm, etRtsp;
@@ -79,7 +79,7 @@ public class ConfigurationFragment extends Fragment {
         rvDeviceList = view.findViewById(R.id.rv_device_list);
         tvEmptyHint = view.findViewById(R.id.tv_empty_hint);
         layoutDetailForm = view.findViewById(R.id.layout_detail_form);
-
+        btnNavToAdd = view.findViewById(R.id.btn_nav_to_add);
         // 绑定表单
         etName = view.findViewById(R.id.et_device_name);
         etArea = view.findViewById(R.id.et_area);
@@ -115,6 +115,11 @@ public class ConfigurationFragment extends Fragment {
         tvEmptyHint.setVisibility(View.GONE);
         layoutDetailForm.setVisibility(View.VISIBLE);
 
+        // 切换按钮：隐藏增加，显示修改/删除
+        btnAdd.setVisibility(View.GONE);
+        btnModify.setVisibility(View.VISIBLE);
+        btnDelete.setVisibility(View.VISIBLE);
+
         // 2. 填充数据
         etName.setText(item.getDeviceName());
         etArea.setText(item.getArea());
@@ -144,51 +149,68 @@ public class ConfigurationFragment extends Fragment {
     }
 
     private void setupButtons() {
-        // 增加按钮：
+        // 标题旁边的“+ 添加设备”按钮逻辑
+        btnNavToAdd.setOnClickListener(v -> {
+            currentSelectedItem = null; // 确保清除选中状态
+            clearForm();
+            tvEmptyHint.setVisibility(View.GONE);
+            layoutDetailForm.setVisibility(View.VISIBLE);
+
+            // 设置按钮显示逻辑：显示增加，隐藏修改/删除
+            btnAdd.setVisibility(View.VISIBLE);
+            btnModify.setVisibility(View.GONE);
+            btnDelete.setVisibility(View.GONE);
+        });
+
+        // 增加按钮点击逻辑
         btnAdd.setOnClickListener(v -> {
-            // 假设用户在清空表单后点击增加，则将当前表单内容作为新设备添加
             DeviceItem newItem = getDeviceItemFromForm();
             if (newItem.getDeviceName().isEmpty()) {
                 Toast.makeText(getContext(), "设备名称不能为空", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            viewModel.addDevice(newItem); // <-- 调用 ViewModel 执行添加
+            // 接收 ViewModel 的返回值
+            boolean success = viewModel.addDevice(newItem);
 
-            // ================== 新增代码 ==================
-            // 新增设备后，也立即刷新连接
-            if (getActivity() instanceof com.example.mineguard.MainActivity) {
-                ((com.example.mineguard.MainActivity) getActivity()).manualRefreshAlarmConfig();
+            if (success) {
+                if (getActivity() instanceof com.example.mineguard.MainActivity) {
+                    ((com.example.mineguard.MainActivity) getActivity()).manualRefreshAlarmConfig();
+                }
+                Toast.makeText(getContext(), "设备已添加：" + newItem.getDeviceName(), Toast.LENGTH_SHORT).show();
+                layoutDetailForm.setVisibility(View.GONE);
+                tvEmptyHint.setVisibility(View.VISIBLE);
+            } else {
+                // 提示冲突
+                Toast.makeText(getContext(), "添加失败：设备名称「" + newItem.getDeviceName() + "」已存在", Toast.LENGTH_LONG).show();
             }
-            // =============================================
-            Toast.makeText(getContext(), "已新增通道：" + newItem.getDeviceName(), Toast.LENGTH_SHORT).show();
-            clearForm();
         });
 
-        // 修改按钮：
+        // 修改按钮点击逻辑
         btnModify.setOnClickListener(v -> {
-            if (currentSelectedItem == null) {
-                Toast.makeText(getContext(), "请先选择要修改的通道", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            // 使用当前选中的设备作为旧项，表单内容作为新项
-            DeviceItem newItem = getDeviceItemFromForm();
-            viewModel.updateDevice(currentSelectedItem, newItem); // <-- 调用 ViewModel 执行修改
-            currentSelectedItem = newItem; // 更新当前选中项的引用
+            if (currentSelectedItem == null) return;
 
-            // ================== 新增代码开始 ==================
-            // 3. 核心修改：通知 MainActivity 立即刷新连接，让新 IP 马上生效
-            if (getActivity() instanceof com.example.mineguard.MainActivity) {
-                ((com.example.mineguard.MainActivity) getActivity()).manualRefreshAlarmConfig();
+            DeviceItem newItem = getDeviceItemFromForm();
+
+            // 接收 ViewModel 的返回值
+            boolean success = viewModel.updateDevice(currentSelectedItem, newItem);
+
+            if (success) {
+                currentSelectedItem = newItem;
+                if (getActivity() instanceof com.example.mineguard.MainActivity) {
+                    ((com.example.mineguard.MainActivity) getActivity()).manualRefreshAlarmConfig();
+                }
+                Toast.makeText(getContext(), "已更新设备信息", Toast.LENGTH_SHORT).show();
+            } else {
+                // 提示冲突
+                Toast.makeText(getContext(), "修改失败：名称「" + newItem.getDeviceName() + "」与其他设备冲突", Toast.LENGTH_LONG).show();
             }
-            // ================== 新增代码结束 ==================
-            Toast.makeText(getContext(), "已更新通道信息：" + newItem.getDeviceName(), Toast.LENGTH_SHORT).show();
         });
 
         // 删除按钮：
         btnDelete.setOnClickListener(v -> {
             if (currentSelectedItem == null) {
-                Toast.makeText(getContext(), "请先选择要删除的通道", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "请先选择要删除的设备", Toast.LENGTH_SHORT).show();
                 return;
             }
 

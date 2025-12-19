@@ -105,21 +105,48 @@ public class DeviceRepository {
         return Collections.unmodifiableList(deviceList);
     }
 
-    public void addDevice(DeviceItem item) {
+    /** * 检查名称是否重复
+     * @param name 要检查的名字
+     * @param excludeItem 如果是修改操作，需要排除掉当前正在修改的对象本身
+     */
+    private boolean isNameExists(String name, DeviceItem excludeItem) {
+        for (DeviceItem item : deviceList) {
+            if (item.getDeviceName().equals(name)) {
+                // 如果是新增，excludeItem 为 null；如果是修改，判断是否为同一个对象
+                if (excludeItem == null || !excludeItem.getDeviceName().equals(name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean addDevice(DeviceItem item) {
+        // 检查名称是否已存在
+        if (isNameExists(item.getDeviceName(), null)) {
+            return false; // 添加失败
+        }
         deviceList.add(item);
-        saveDeviceData(); // <-- 每次添加后，立即保存到磁盘
+        saveDeviceData();
+        return true;
     }
 
     public boolean updateDevice(DeviceItem oldItem, DeviceItem newItem) {
-        // 使用 DeviceItem 中重写的 equals() 方法来查找对象
+        // 1. 查找旧对象索引
         int index = deviceList.indexOf(oldItem);
+        if (index == -1) return false;
 
-        if (index != -1) {
-            deviceList.set(index, newItem);
-            saveDeviceData(); // <-- 每次修改后，立即保存到磁盘
-            return true;
+        // 2. 检查新名称是否与其他设备冲突 (排除掉自己)
+        // 注意：如果用户没改名字只是改了IP，isNameExists 应该返回 false
+        for (DeviceItem item : deviceList) {
+            if (item != deviceList.get(index) && item.getDeviceName().equals(newItem.getDeviceName())) {
+                return false; // 名称冲突
+            }
         }
-        return false;
+
+        deviceList.set(index, newItem);
+        saveDeviceData();
+        return true;
     }
 
     public boolean deleteDevice(DeviceItem item) {

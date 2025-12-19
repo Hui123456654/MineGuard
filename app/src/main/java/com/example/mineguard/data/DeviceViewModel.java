@@ -32,15 +32,20 @@ public class DeviceViewModel extends ViewModel {
 
     // --- 供 Fragment 调用的 CRUD 方法 ---
 
-    public void addDevice(DeviceItem item) {
-        repository.addDevice(item);
-        refreshLiveData();
-    }
-
-    public void updateDevice(DeviceItem oldItem, DeviceItem newItem) {
-        if (repository.updateDevice(oldItem, newItem)) {
+    public boolean addDevice(DeviceItem item) {
+        boolean success = repository.addDevice(item);
+        if (success) {
             refreshLiveData();
         }
+        return success; // 返回结果给 Fragment
+    }
+
+    public boolean updateDevice(DeviceItem oldItem, DeviceItem newItem) {
+        boolean success = repository.updateDevice(oldItem, newItem);
+        if (success) {
+            refreshLiveData();
+        }
+        return success; // 返回结果给 Fragment
     }
 
     public void deleteDevice(DeviceItem item) {
