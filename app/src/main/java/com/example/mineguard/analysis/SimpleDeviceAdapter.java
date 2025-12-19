@@ -18,7 +18,8 @@ import java.util.List;
 public class SimpleDeviceAdapter extends RecyclerView.Adapter<SimpleDeviceAdapter.ViewHolder> {
 
     private List<DeviceItem> deviceList;
-
+    private OnDeviceClickListener listener;
+    private int selectedPosition = 0;
     public SimpleDeviceAdapter(List<DeviceItem> deviceList) {
         this.deviceList = deviceList;
     }
@@ -43,6 +44,21 @@ public class SimpleDeviceAdapter extends RecyclerView.Adapter<SimpleDeviceAdapte
         // 使用 DeviceItem 的 getter 方法设置文本
         holder.tvName.setText(deviceItem.getDeviceName());
         holder.tvIp.setText(deviceItem.getIpAddress()); // 使用 IP 地址
+
+        if (selectedPosition == position) {
+            holder.itemView.setBackgroundColor(Color.parseColor("#33AAAAAA")); // 浅灰i色背景
+        } else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+        holder.itemView.setOnClickListener(v -> {
+            int oldPos = selectedPosition;
+            selectedPosition = holder.getAdapterPosition();
+            notifyItemChanged(oldPos);
+            notifyItemChanged(selectedPosition);
+
+            if (listener != null) listener.onDeviceClick(deviceItem);
+        });
     }
 
     @Override
@@ -59,4 +75,15 @@ public class SimpleDeviceAdapter extends RecyclerView.Adapter<SimpleDeviceAdapte
             tvIp = itemView.findViewById(R.id.tv_device_ip);
         }
     }
+
+    // 1. 定义点击回调接口
+    public interface OnDeviceClickListener {
+        void onDeviceClick(DeviceItem device);
+    }
+
+    // 2. 提供设置监听器的方法
+    public void setOnDeviceClickListener(OnDeviceClickListener listener) {
+        this.listener = listener;
+    }
+
 }

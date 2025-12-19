@@ -35,7 +35,7 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
     private View grid1View;
     private View grid2View;
     private View grid4View;
-
+    private int currentPlayingIndex = 0; // 记录当前正在播放的设备索引
     // 单路播放器
     private PlayerView playerView;
     private ExoPlayer player;
@@ -122,6 +122,12 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         deviceAdapter = new SimpleDeviceAdapter(new ArrayList<>());
         rvDeviceList.setAdapter(deviceAdapter);
 
+        // 1. 设置点击监听
+        deviceAdapter.setOnDeviceClickListener(device -> {
+            // 当左侧列表被点击时
+            playSelectedDevice(device);
+        });
+
         // === 核心修改 2：监听数据变化并自动刷新视频 ===
         deviceViewModel.getLiveDeviceList().observe(getViewLifecycleOwner(), deviceItems -> {
             // 1. 更新 Adapter 显示
@@ -147,6 +153,54 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         setupClickListeners(view);
     }
 
+    /**
+     * 核心方法：播放指定设备的视频
+     */
+    private void playSelectedDevice(DeviceItem device) {
+        if (device == null || device.getRtspUrl() == null || device.getRtspUrl().isEmpty()) {
+            Toast.makeText(getContext(), "该设备无有效的视频地址", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 1. 获取该设备在当前列表中的索引
+        int index = currentDeviceList.indexOf(device);
+        if (index != -1) {
+            currentPlayingIndex = index;
+        }
+
+        // 2. 切换到单路视图（如果不在单路）
+        if (grid1View.getVisibility() != View.VISIBLE) {
+            grid1View.setVisibility(View.VISIBLE);
+            grid2View.setVisibility(View.GONE);
+            grid4View.setVisibility(View.GONE);
+            stopGrid2Players();
+            stopGrid4Players();
+        }
+
+        // 3. 统一调用刷新方法
+        refreshCurrentVideoMode();
+
+        Toast.makeText(getContext(), "正在切换至: " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
+    }
+    /**
+     * 封装单路播放的具体实现 (参考了你原来的 initializePlayer)
+     */
+    private void startSinglePlayer(String rtspUrl) {
+        if (player == null) {
+            player = new ExoPlayer.Builder(requireContext()).build();
+            playerView.setPlayer(player);
+        }
+
+        // 创建媒体源
+        MediaItem mediaItem = MediaItem.fromUri(rtspUrl);
+        MediaSource mediaSource = new RtspMediaSource.Factory()
+                .setForceUseRtpTcp(true) // 强制 TCP 传输，更稳定
+                .createMediaSource(mediaItem);
+
+        player.setMediaSource(mediaSource);
+        player.prepare();
+        player.play();
+    }
     private void toggleLeftSide() {
         // 开启布局动画
         androidx.transition.TransitionManager.beginDelayedTransition((ViewGroup) getView());
@@ -317,13 +371,17 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
 
     // === 核心修改 4：单路播放逻辑 (读取 List 第一个) ===
     private void initializePlayer() {
-        // 如果没有设备数据，直接返回
         if (currentDeviceList == null || currentDeviceList.isEmpty()) {
             return;
         }
 
-        // 取出第一个设备的 URL
-        String rtspUrl = currentDeviceList.get(0).getRtspUrl();
+        // 确保索引不越界（防止设备被删除后索引失效）
+        if (currentPlayingIndex >= currentDeviceList.size()) {
+            currentPlayingIndex = 0;
+        }
+
+        // 获取当前选中的设备 URL
+        String rtspUrl = currentDeviceList.get(currentPlayingIndex).getRtspUrl();
         if (rtspUrl == null || rtspUrl.isEmpty()) return;
 
         if (player == null) {
@@ -331,11 +389,12 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             playerView.setPlayer(player);
         }
 
-        // 不管 Player 是否为空，都重新设置 MediaSource 以确保 URL 是最新的
+        // 使用 RtspMediaSource 确保稳定性
         MediaItem mediaItem = MediaItem.fromUri(rtspUrl);
         MediaSource mediaSource = new RtspMediaSource.Factory()
                 .setForceUseRtpTcp(true)
                 .createMediaSource(mediaItem);
+
         player.setMediaSource(mediaSource);
         player.prepare();
         player.play();
