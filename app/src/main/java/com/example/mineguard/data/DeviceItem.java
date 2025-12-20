@@ -8,14 +8,16 @@ public class DeviceItem {
     private String alarmType;
     private String deviceType;
     private String rtspUrl;
+    private String status;
 
-    public DeviceItem(String deviceName, String area, String ipAddress, String alarmType, String deviceType,  String rtspUrl) {
+    public DeviceItem(String deviceName, String area, String ipAddress, String alarmType, String deviceType,  String rtspUrl,String status) {
         this.deviceName = deviceName;
         this.area = area;
         this.ipAddress = ipAddress;
         this.alarmType = alarmType;
         this.deviceType = deviceType;
         this.rtspUrl = rtspUrl;
+        this.status = status;
     }
 
     // Getters and Setters
@@ -25,6 +27,8 @@ public class DeviceItem {
     public String getAlarmType() { return alarmType; }
     public String getDeviceType() { return deviceType; }
     public String getRtspUrl() { return rtspUrl; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     // 新增：重写 equals() 和 hashCode()，用于 List.remove() 和 List.update()
     @Override
     public boolean equals(Object o) {

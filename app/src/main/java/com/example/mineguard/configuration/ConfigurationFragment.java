@@ -145,7 +145,7 @@ public class ConfigurationFragment extends Fragment {
         String ip = etIp.getText().toString();
         String alarm = etAlarm.getText().toString();
         String rtsp = etRtsp.getText().toString();
-        return new DeviceItem(name, area,ip, alarm, deviceType, rtsp);
+        return new DeviceItem(name, area,ip, alarm, deviceType, rtsp, "撤防");
     }
 
     private void setupButtons() {
@@ -191,7 +191,8 @@ public class ConfigurationFragment extends Fragment {
             if (currentSelectedItem == null) return;
 
             DeviceItem newItem = getDeviceItemFromForm();
-
+            // 核心修复：将旧对象的状态赋值给新对象，确保状态不被覆盖
+            newItem.setStatus(currentSelectedItem.getStatus());
             // 接收 ViewModel 的返回值
             boolean success = viewModel.updateDevice(currentSelectedItem, newItem);
 

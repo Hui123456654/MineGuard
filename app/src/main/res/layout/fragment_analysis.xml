@@ -237,38 +237,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="btn_disarm,btn_grid_1,btn_grid_4" />
-
-    <Button
-        android:id="@+id/btn_disarm"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:text="撤防"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/card_center_video" />
-
-    <Button
-        android:id="@+id/btn_close"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="关闭"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_disarm"
-        app:layout_constraintStart_toEndOf="@+id/btn_disarm" />
-
-    <Button
-        android:id="@+id/btn_intercom"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="对讲"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_disarm"
-        app:layout_constraintStart_toEndOf="@+id/btn_close" />
+        app:constraint_referenced_ids="btn_grid_1,btn_grid_2,btn_grid_4" />
 
     <ImageButton
         android:id="@+id/btn_grid_4"
@@ -280,9 +249,8 @@
         android:padding="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/icon_four_grid"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_disarm"
-        app:layout_constraintEnd_toEndOf="@+id/card_center_video"
-        app:layout_constraintTop_toTopOf="@+id/btn_disarm" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/card_center_video" />
 
     <ImageButton
         android:id="@+id/btn_grid_2"

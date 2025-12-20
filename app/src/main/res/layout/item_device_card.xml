@@ -16,37 +16,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="10dp"> <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_device_name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="#333333"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             tools:text="主井皮带机CAM01" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_defense_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:textSize="11sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_status_tag"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="已布防"
+            tools:backgroundTint="#4CAF50"/>
+    </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_device_ip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_device_ip"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="#999999"
-                android:textSize="11sp"
-                tools:text="192.168.1.101" />
-        </LinearLayout>
+            android:textColor="#999999"
+            android:textSize="12sp"
+            tools:text="192.168.1.101" />
 
     </LinearLayout>
 

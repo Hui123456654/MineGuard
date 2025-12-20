@@ -58,7 +58,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
         // 使用 Emoji 或图标增加识别度，不再携带长前缀
         holder.tvArea.setText("📍 所属区域： " + item.getArea());
         holder.tvIp.setText("🌐 IP地址： " + item.getIpAddress());
-        holder.tvDevice.setText("📱 设备类型： " + item.getDeviceType());
+        holder.tvDevice.setText("设备类型： " + item.getDeviceType());
         holder.tvAlarm.setText("⚠️ 报警类型： " + item.getAlarmType());
 
         // 点击事件保持不变

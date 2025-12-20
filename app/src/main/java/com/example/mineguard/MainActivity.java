@@ -76,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
         // 确保仓库初始化
         DeviceRepository.init(getApplicationContext());
 
+        // 2. 【临时代码】手动调用一次重置，以刷新包含 status 属性的新默认数据
+        // 运行一次看到效果后，建议将下面这一行注释掉或删除
+        //DeviceRepository.getInstance().resetData();
+
         setContentView(R.layout.activity_main);
         bottomNav = findViewById(R.id.bottom_navigation);
         windowInsetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());

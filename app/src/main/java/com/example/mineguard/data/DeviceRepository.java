@@ -94,9 +94,9 @@ public class DeviceRepository {
     private void initDefaultData() {
         // 确保列表是新的
         deviceList = new ArrayList<>();
-        deviceList.add(new DeviceItem("异物相机1", "东区","192.168.31.64", "异物", "异物相机",  "rtsp://192.168.31.64/live/raw"));
-        deviceList.add(new DeviceItem("煤量相机2", "北区", "192.168.1.65", "煤块", "煤量相机", "rtsp://192.168.1.65/live/raw"));
-        deviceList.add(new DeviceItem("三超相机3", "西区", "192.168.1.103", "三超", "三超相机", "rtsp://192.168.1.103/live/raw"));
+        deviceList.add(new DeviceItem("异物相机1", "东区","192.168.31.64", "异物", "异物相机",  "rtsp://192.168.31.64/live/raw","撤防"));
+        deviceList.add(new DeviceItem("煤量相机2", "北区", "192.168.1.65", "煤块", "煤量相机", "rtsp://192.168.1.65/live/raw","撤防"));
+        deviceList.add(new DeviceItem("三超相机3", "西区", "192.168.1.103", "三超", "三超相机", "rtsp://192.168.1.103/live/raw","撤防"));
     }
 
     // --- CRUD 操作方法 (操作后必须调用 saveDeviceData) ---

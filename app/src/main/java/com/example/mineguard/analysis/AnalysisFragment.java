@@ -1,5 +1,5 @@
 package com.example.mineguard.analysis;
-
+import android.util.Log;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.TextureView;
@@ -29,7 +29,12 @@ import com.example.mineguard.data.DeviceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import java.io.IOException;
 public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmReceivedListener {
 
     private View grid1View;
@@ -53,6 +58,7 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
 
     // === 核心修改 1：保存当前设备列表 ===
     private List<DeviceItem> currentDeviceList = new ArrayList<>();
+    private final OkHttpClient httpClient = new OkHttpClient();
 
     private RecyclerView rvAlarmList;
     private AlarmAdapter alarmAdapter;
@@ -123,9 +129,31 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         rvDeviceList.setAdapter(deviceAdapter);
 
         // 1. 设置点击监听
-        deviceAdapter.setOnDeviceClickListener(device -> {
-            // 当左侧列表被点击时
-            playSelectedDevice(device);
+//        deviceAdapter.setOnDeviceClickListener(device -> {
+//            // 当左侧列表被点击时
+//            playSelectedDevice(device);
+//        });
+        // 修改适配器初始化部分（通常在 onViewCreated 中）
+        deviceAdapter.setOnDeviceClickListener(new SimpleDeviceAdapter.OnDeviceClickListener() {
+            @Override
+            public void onDeviceClick(DeviceItem device) {
+                playSelectedDevice(device);
+            }
+
+            @Override
+            public void onStatusToggle(DeviceItem device, String newStatus) {
+                // 1. 【核心改动】立即更新本地数据和 UI，确保持久化（存入 SharedPreferences）
+                DeviceItem updatedDevice = new DeviceItem(
+                        device.getDeviceName(), device.getArea(), device.getIpAddress(),
+                        device.getAlarmType(), device.getDeviceType(), device.getRtspUrl(),
+                        newStatus
+                );
+                // 这行代码会通过 ViewModel 调用 Repository 保存数据并刷新列表颜色
+                deviceViewModel.updateDevice(device, updatedDevice);
+
+                // 2. 【核心改动】异步发送指令，不处理 response，不弹错误提示
+                sendDefenseCommand(device.getIpAddress(), newStatus);
+            }
         });
 
         // === 核心修改 2：监听数据变化并自动刷新视频 ===
@@ -153,6 +181,50 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         setupClickListeners(view);
     }
 
+    // 发送 HTTP 指令并保存数据的方法
+    private void sendDefenseCommand(String ip, String newStatus) {
+        boolean isDefense = "已布防".equals(newStatus);
+        String action = isDefense ? "on" : "off";
+
+        // 1. 准备接口七：智能检测开关 (必须用 POST) [cite: 79, 144, 146]
+        String smartUrl = "http://" + ip + ":5002/server/set/smart/event/" + action + "/";
+
+        // 2. 获取 Activity 引用以同步推送配置
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity == null) return;
+
+        // 3. 构建请求体 (即使接口七文档说无参数，建议按 POST 规范发送空 Body 或由系统配置 Body)
+        okhttp3.RequestBody emptyBody = okhttp3.RequestBody.create("", null);
+
+        // 如果是布防，先调用一次 MainActivity 的配置逻辑，确保相机知道手机 IP [cite: 87, 89]
+        if (isDefense) {
+            // 这一步确保了 protocol, port, uri, extend 四个必传参数送达 [cite: 81]
+            mainActivity.manualRefreshAlarmConfig();
+        }
+
+        // 4. 发送接口七指令 (关键：必须是 POST)
+        Request smartRequest = new Request.Builder()
+                .url(smartUrl)
+                .post(emptyBody) // 显式指定 POST
+                .build();
+
+        httpClient.newCall(smartRequest).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("Defense", "检测开关设置失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.i("Defense", "设备" + action + "指令执行成功");
+                } else {
+                    Log.e("Defense", "设备返回错误码: " + response.code());
+                }
+                response.close();
+            }
+        });
+    }
     /**
      * 核心方法：播放指定设备的视频
      */
@@ -334,9 +406,7 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
         ImageButton btnGrid1 = view.findViewById(R.id.btn_grid_1);
         ImageButton btnGrid2 = view.findViewById(R.id.btn_grid_2);
         ImageButton btnGrid4 = view.findViewById(R.id.btn_grid_4);
-        Button btnDisarm = view.findViewById(R.id.btn_disarm);
-        Button btnClose = view.findViewById(R.id.btn_close);
-        Button btnIntercom = view.findViewById(R.id.btn_intercom);
+
         btnFullscreenToggle = view.findViewById(R.id.btn_fullscreen_toggle);
 
         btnGrid1.setOnClickListener(v -> {
@@ -362,10 +432,6 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             refreshCurrentVideoMode(); // 切换模式时刷新
             Toast.makeText(getContext(), "切换至四路视频", Toast.LENGTH_SHORT).show();
         });
-
-        btnDisarm.setOnClickListener(v -> Toast.makeText(getContext(), "撤防指令已发送", Toast.LENGTH_SHORT).show());
-        btnClose.setOnClickListener(v -> Toast.makeText(getContext(), "关闭操作", Toast.LENGTH_SHORT).show());
-        btnIntercom.setOnClickListener(v -> Toast.makeText(getContext(), "开启对讲", Toast.LENGTH_SHORT).show());
         btnFullscreenToggle.setOnClickListener(v -> toggleFullScreen());
     }
 
@@ -530,9 +596,6 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             btnToggleRight.setVisibility(View.GONE);
 
             // 隐藏底部操作按钮（根据你的 XML ID 补充）
-            getView().findViewById(R.id.btn_disarm).setVisibility(View.GONE);
-            getView().findViewById(R.id.btn_close).setVisibility(View.GONE);
-            getView().findViewById(R.id.btn_intercom).setVisibility(View.GONE);
             getView().findViewById(R.id.btn_grid_1).setVisibility(View.GONE);
             getView().findViewById(R.id.btn_grid_2).setVisibility(View.GONE);
             getView().findViewById(R.id.btn_grid_4).setVisibility(View.GONE);
@@ -556,9 +619,6 @@ public class AnalysisFragment extends Fragment implements MainActivity.OnAlarmRe
             btnToggleRight.setVisibility(View.VISIBLE);
 
             // 恢复底部操作按钮
-            getView().findViewById(R.id.btn_disarm).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.btn_close).setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.btn_intercom).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.btn_grid_1).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.btn_grid_2).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.btn_grid_4).setVisibility(View.VISIBLE);
