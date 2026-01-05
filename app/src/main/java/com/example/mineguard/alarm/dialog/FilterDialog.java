@@ -15,7 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import com.example.mineguard.R;
-
+import com.example.mineguard.data.DeviceItem;
+import com.example.mineguard.data.DeviceRepository;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * 筛选条件对话框
  * 修改记录：改为居中弹窗 (DialogFragment)，并适配宽屏显示
@@ -135,7 +138,25 @@ public class FilterDialog extends DialogFragment {
         spinnerStatus.setAdapter(statusAdapter);
 
         // 报警位置
-        String[] locations = {"全部", "矿井1", "矿井2", "矿井3"};
+        // 1. 初始化动态列表
+        List<String> dynamicAreas = new ArrayList<>();
+        dynamicAreas.add("全部");
+        // 2. 获取数据
+        DeviceRepository repository = DeviceRepository.getInstance();
+        if (repository != null) {
+            List<DeviceItem> devices = repository.getDevices();
+            if (devices != null) {
+                for (DeviceItem device : devices) {
+                    String area = device.getArea();
+                    // 去重且防空处理
+                    if (area != null && !area.trim().isEmpty() && !dynamicAreas.contains(area)) {
+                        dynamicAreas.add(area);
+                    }
+                }
+            }
+        }
+        // 2. 将 List 转换为 String[]
+        String[] locations = dynamicAreas.toArray(new String[0]);
         ArrayAdapter<String> locationAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, locations);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
