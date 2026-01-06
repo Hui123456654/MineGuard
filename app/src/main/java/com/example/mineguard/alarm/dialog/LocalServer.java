@@ -163,8 +163,11 @@ public class LocalServer extends NanoHTTPD {
                                 if ("alarm_video".equals(name) || filename.endsWith(".mp4")) {
                                     extension = ".mp4";
                                 }
-                                String savedPath = saveByteFile(payload, bodyStart, bodyLen, "ALARM_" + System.currentTimeMillis(), extension);
-                                item.setPath(savedPath);
+                                // 只保存带检测框的图片 (alarm_img)，忽略不带框的图片 (alarm_raw_img)
+                                if ("alarm_img".equals(name) || "alarm_video".equals(name)) {
+                                    String savedPath = saveByteFile(payload, bodyStart, bodyLen, "ALARM_" + System.currentTimeMillis(), extension);
+                                    item.setPath(savedPath);
+                                }
                             }
                         } else {
                             // 解析文本
