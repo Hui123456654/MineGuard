@@ -1,4 +1,4 @@
-package com.example.mineguard.alarm; // 注意包名，如果你的文件在 dialog 包下，请改为 package com.example.mineguard.alarm.dialog;
+package com.example.mineguard.alarm.dialog;
 
 import android.content.Context;
 import android.util.Log;
